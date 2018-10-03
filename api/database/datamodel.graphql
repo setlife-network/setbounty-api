@@ -1,0 +1,22 @@
+type User {
+    id: ID! @unique
+    username: String! @unique
+    email: String! @unique
+}
+
+type Issue {
+    id: ID! @unique
+    createdAt: DateTime!
+    number: Int!
+    author: User!
+    closed: Boolean!
+    locked: Boolean!
+    bounty: Bounty
+}
+
+type Bounty {
+    id: ID! @unique
+    createdAt: DateTime!
+    amount: Int!
+    postedBy: User
+}

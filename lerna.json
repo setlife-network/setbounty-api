@@ -1,0 +1,10 @@
+{
+  "packages": [
+    "api",
+    "chrome",
+    "tools"
+  ],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}

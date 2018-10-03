@@ -1,0 +1,18 @@
+{
+  "name": "set-bounty",
+  "private": true,
+  "workspaces": [
+    "api",
+    "chrome",
+    "tools"
+  ],
+  "devDependencies": {
+    "lerna": "^3.4.0"
+  },
+  "scripts": {
+    "clean": "lerna clean",
+    "dev": "node-dev --no-notify api/index.js",
+    "prebuild": "lerna exec -- rm -rf build",
+    "build": "lerna build"
+  }
+}
