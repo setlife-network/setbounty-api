@@ -8,10 +8,11 @@ type Issue {
     id: ID! @unique
     createdAt: DateTime!
     number: Int!
-    author: User!
+    author: User
     closed: Boolean!
     locked: Boolean!
     bounty: Bounty
+    # users: [User]
 }
 
 type Bounty {
