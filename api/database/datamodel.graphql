@@ -2,6 +2,7 @@ type User {
     id: ID! @unique
     username: String! @unique
     email: String! @unique
+    balance: Int!
 }
 
 type Issue {
@@ -12,7 +13,6 @@ type Issue {
     closed: Boolean!
     locked: Boolean!
     bounty: Bounty
-    # users: [User]
 }
 
 type Bounty {

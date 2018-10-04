@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "node-dev --no-notify index.js",
-    "playground": "yarn dev && graphql playground"
+    "playground": "graphql playground"
   },
   "dependencies": {
     "apollo-server": "^2.1.0",
