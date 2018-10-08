@@ -62,3 +62,8 @@ typings/
 
 # Build folders
 build
+
+# Chrome Extension
+chrome/assets/background.js
+chrome/assets/content.js
+chrome/assets/popup.js
