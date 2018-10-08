@@ -29,7 +29,7 @@ cd chrome
 yarn dev
 ```
 
-Alternatively you can run `yarn build` or `yarn dev` at the root level **WHICH I HAVEN'T SETUP YET**
+~~Alternatively you can run `yarn build` or `yarn dev` at the root level~~ **WHICH I HAVEN'T SETUP YET**
 
 ### Tooling
 
@@ -55,5 +55,8 @@ lerna add tools --scope=api
 # Install babel-core in all modules
 lerna add babel-core
 ```
+<<<<<<< HEAD
 
 ## Production
+=======
+>>>>>>> 768f182ca2bfd3768faccab59a5e1ce2046cd57a
