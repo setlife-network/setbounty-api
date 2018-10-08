@@ -27,7 +27,7 @@ cd chrome
 yarn dev
 ```
 
-Alternatively you can run `yarn build` or `yarn dev` at the root level **WHICH I HAVEN'T SETUP YET**
+~~Alternatively you can run `yarn build` or `yarn dev` at the root level~~ **WHICH I HAVEN'T SETUP YET**
 
 ## Tooling
 
