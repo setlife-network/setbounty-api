@@ -1,0 +1,1592 @@
+# source: http://localhost:4466
+# timestamp: Mon Oct 08 2018 13:24:24 GMT+0200 (Central European Summer Time)
+
+type AggregateBounty {
+  count: Int!
+}
+
+type AggregateIssue {
+  count: Int!
+}
+
+type AggregatePullRequest {
+  count: Int!
+}
+
+type AggregateRepository {
+  count: Int!
+}
+
+type AggregateUser {
+  count: Int!
+}
+
+type BatchPayload {
+  """The number of nodes that have been affected by the Batch operation."""
+  count: Long!
+}
+
+type Bounty implements Node {
+  id: ID!
+  createdAt: DateTime!
+  author(where: UserWhereInput): User!
+  amount: Int
+  issue(where: IssueWhereInput): Issue!
+  timeLimit: Int!
+}
+
+"""A connection to a list of items."""
+type BountyConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [BountyEdge]!
+  aggregate: AggregateBounty!
+}
+
+input BountyCreateInput {
+  amount: Int
+  timeLimit: Int
+  author: UserCreateOneWithoutBountiesInput!
+  issue: IssueCreateOneWithoutBountyInput!
+}
+
+input BountyCreateManyWithoutAuthorInput {
+  create: [BountyCreateWithoutAuthorInput!]
+  connect: [BountyWhereUniqueInput!]
+}
+
+input BountyCreateOneWithoutIssueInput {
+  create: BountyCreateWithoutIssueInput
+  connect: BountyWhereUniqueInput
+}
+
+input BountyCreateWithoutAuthorInput {
+  amount: Int
+  timeLimit: Int
+  issue: IssueCreateOneWithoutBountyInput!
+}
+
+input BountyCreateWithoutIssueInput {
+  amount: Int
+  timeLimit: Int
+  author: UserCreateOneWithoutBountiesInput!
+}
+
+"""An edge in a connection."""
+type BountyEdge {
+  """The item at the end of the edge."""
+  node: Bounty!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum BountyOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  amount_ASC
+  amount_DESC
+  timeLimit_ASC
+  timeLimit_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type BountyPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  amount: Int
+  timeLimit: Int!
+}
+
+type BountySubscriptionPayload {
+  mutation: MutationType!
+  node: Bounty
+  updatedFields: [String!]
+  previousValues: BountyPreviousValues
+}
+
+input BountySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BountySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BountySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BountySubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: BountyWhereInput
+}
+
+input BountyUpdateInput {
+  amount: Int
+  timeLimit: Int
+  author: UserUpdateOneRequiredWithoutBountiesInput
+  issue: IssueUpdateOneRequiredWithoutBountyInput
+}
+
+input BountyUpdateManyWithoutAuthorInput {
+  create: [BountyCreateWithoutAuthorInput!]
+  connect: [BountyWhereUniqueInput!]
+  disconnect: [BountyWhereUniqueInput!]
+  delete: [BountyWhereUniqueInput!]
+  update: [BountyUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [BountyUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input BountyUpdateOneRequiredWithoutIssueInput {
+  create: BountyCreateWithoutIssueInput
+  connect: BountyWhereUniqueInput
+  update: BountyUpdateWithoutIssueDataInput
+  upsert: BountyUpsertWithoutIssueInput
+}
+
+input BountyUpdateWithoutAuthorDataInput {
+  amount: Int
+  timeLimit: Int
+  issue: IssueUpdateOneRequiredWithoutBountyInput
+}
+
+input BountyUpdateWithoutIssueDataInput {
+  amount: Int
+  timeLimit: Int
+  author: UserUpdateOneRequiredWithoutBountiesInput
+}
+
+input BountyUpdateWithWhereUniqueWithoutAuthorInput {
+  where: BountyWhereUniqueInput!
+  data: BountyUpdateWithoutAuthorDataInput!
+}
+
+input BountyUpsertWithoutIssueInput {
+  update: BountyUpdateWithoutIssueDataInput!
+  create: BountyCreateWithoutIssueInput!
+}
+
+input BountyUpsertWithWhereUniqueWithoutAuthorInput {
+  where: BountyWhereUniqueInput!
+  update: BountyUpdateWithoutAuthorDataInput!
+  create: BountyCreateWithoutAuthorInput!
+}
+
+input BountyWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BountyWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BountyWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BountyWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  amount: Int
+
+  """All values that are not equal to given value."""
+  amount_not: Int
+
+  """All values that are contained in given list."""
+  amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  amount_lt: Int
+
+  """All values less than or equal the given value."""
+  amount_lte: Int
+
+  """All values greater than the given value."""
+  amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  amount_gte: Int
+  timeLimit: Int
+
+  """All values that are not equal to given value."""
+  timeLimit_not: Int
+
+  """All values that are contained in given list."""
+  timeLimit_in: [Int!]
+
+  """All values that are not contained in given list."""
+  timeLimit_not_in: [Int!]
+
+  """All values less than the given value."""
+  timeLimit_lt: Int
+
+  """All values less than or equal the given value."""
+  timeLimit_lte: Int
+
+  """All values greater than the given value."""
+  timeLimit_gt: Int
+
+  """All values greater than or equal the given value."""
+  timeLimit_gte: Int
+  author: UserWhereInput
+  issue: IssueWhereInput
+}
+
+input BountyWhereUniqueInput {
+  id: ID
+}
+
+scalar DateTime
+
+type Issue implements Node {
+  id: ID!
+  number: Int!
+  closed: Boolean!
+  locked: Boolean!
+  author(where: UserWhereInput): User!
+  bounty(where: BountyWhereInput): Bounty!
+}
+
+"""A connection to a list of items."""
+type IssueConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [IssueEdge]!
+  aggregate: AggregateIssue!
+}
+
+input IssueCreateInput {
+  number: Int!
+  closed: Boolean
+  locked: Boolean
+  author: UserCreateOneInput!
+  bounty: BountyCreateOneWithoutIssueInput!
+}
+
+input IssueCreateManyInput {
+  create: [IssueCreateInput!]
+  connect: [IssueWhereUniqueInput!]
+}
+
+input IssueCreateOneWithoutBountyInput {
+  create: IssueCreateWithoutBountyInput
+  connect: IssueWhereUniqueInput
+}
+
+input IssueCreateWithoutBountyInput {
+  number: Int!
+  closed: Boolean
+  locked: Boolean
+  author: UserCreateOneInput!
+}
+
+"""An edge in a connection."""
+type IssueEdge {
+  """The item at the end of the edge."""
+  node: Issue!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum IssueOrderByInput {
+  id_ASC
+  id_DESC
+  number_ASC
+  number_DESC
+  closed_ASC
+  closed_DESC
+  locked_ASC
+  locked_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type IssuePreviousValues {
+  id: ID!
+  number: Int!
+  closed: Boolean!
+  locked: Boolean!
+}
+
+type IssueSubscriptionPayload {
+  mutation: MutationType!
+  node: Issue
+  updatedFields: [String!]
+  previousValues: IssuePreviousValues
+}
+
+input IssueSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [IssueSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [IssueSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [IssueSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: IssueWhereInput
+}
+
+input IssueUpdateDataInput {
+  number: Int
+  closed: Boolean
+  locked: Boolean
+  author: UserUpdateOneRequiredInput
+  bounty: BountyUpdateOneRequiredWithoutIssueInput
+}
+
+input IssueUpdateInput {
+  number: Int
+  closed: Boolean
+  locked: Boolean
+  author: UserUpdateOneRequiredInput
+  bounty: BountyUpdateOneRequiredWithoutIssueInput
+}
+
+input IssueUpdateManyInput {
+  create: [IssueCreateInput!]
+  connect: [IssueWhereUniqueInput!]
+  disconnect: [IssueWhereUniqueInput!]
+  delete: [IssueWhereUniqueInput!]
+  update: [IssueUpdateWithWhereUniqueNestedInput!]
+  upsert: [IssueUpsertWithWhereUniqueNestedInput!]
+}
+
+input IssueUpdateOneRequiredWithoutBountyInput {
+  create: IssueCreateWithoutBountyInput
+  connect: IssueWhereUniqueInput
+  update: IssueUpdateWithoutBountyDataInput
+  upsert: IssueUpsertWithoutBountyInput
+}
+
+input IssueUpdateWithoutBountyDataInput {
+  number: Int
+  closed: Boolean
+  locked: Boolean
+  author: UserUpdateOneRequiredInput
+}
+
+input IssueUpdateWithWhereUniqueNestedInput {
+  where: IssueWhereUniqueInput!
+  data: IssueUpdateDataInput!
+}
+
+input IssueUpsertWithoutBountyInput {
+  update: IssueUpdateWithoutBountyDataInput!
+  create: IssueCreateWithoutBountyInput!
+}
+
+input IssueUpsertWithWhereUniqueNestedInput {
+  where: IssueWhereUniqueInput!
+  update: IssueUpdateDataInput!
+  create: IssueCreateInput!
+}
+
+input IssueWhereInput {
+  """Logical AND on all given filters."""
+  AND: [IssueWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [IssueWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [IssueWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  number: Int
+
+  """All values that are not equal to given value."""
+  number_not: Int
+
+  """All values that are contained in given list."""
+  number_in: [Int!]
+
+  """All values that are not contained in given list."""
+  number_not_in: [Int!]
+
+  """All values less than the given value."""
+  number_lt: Int
+
+  """All values less than or equal the given value."""
+  number_lte: Int
+
+  """All values greater than the given value."""
+  number_gt: Int
+
+  """All values greater than or equal the given value."""
+  number_gte: Int
+  closed: Boolean
+
+  """All values that are not equal to given value."""
+  closed_not: Boolean
+  locked: Boolean
+
+  """All values that are not equal to given value."""
+  locked_not: Boolean
+  author: UserWhereInput
+  bounty: BountyWhereInput
+}
+
+input IssueWhereUniqueInput {
+  id: ID
+}
+
+"""Raw JSON value"""
+scalar Json
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Mutation {
+  createBounty(data: BountyCreateInput!): Bounty!
+  createPullRequest(data: PullRequestCreateInput!): PullRequest!
+  createRepository(data: RepositoryCreateInput!): Repository!
+  createIssue(data: IssueCreateInput!): Issue!
+  createUser(data: UserCreateInput!): User!
+  updateBounty(data: BountyUpdateInput!, where: BountyWhereUniqueInput!): Bounty
+  updateIssue(data: IssueUpdateInput!, where: IssueWhereUniqueInput!): Issue
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  deleteBounty(where: BountyWhereUniqueInput!): Bounty
+  deleteIssue(where: IssueWhereUniqueInput!): Issue
+  deleteUser(where: UserWhereUniqueInput!): User
+  upsertBounty(where: BountyWhereUniqueInput!, create: BountyCreateInput!, update: BountyUpdateInput!): Bounty!
+  upsertIssue(where: IssueWhereUniqueInput!, create: IssueCreateInput!, update: IssueUpdateInput!): Issue!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateManyBounties(data: BountyUpdateInput!, where: BountyWhereInput): BatchPayload!
+  updateManyPullRequests(data: PullRequestUpdateInput!, where: PullRequestWhereInput): BatchPayload!
+  updateManyRepositories(data: RepositoryUpdateInput!, where: RepositoryWhereInput): BatchPayload!
+  updateManyIssues(data: IssueUpdateInput!, where: IssueWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  deleteManyBounties(where: BountyWhereInput): BatchPayload!
+  deleteManyPullRequests(where: PullRequestWhereInput): BatchPayload!
+  deleteManyRepositories(where: RepositoryWhereInput): BatchPayload!
+  deleteManyIssues(where: IssueWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  executeRaw(database: PrismaDatabase, query: String!): Json!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+enum PrismaDatabase {
+  default
+}
+
+type PullRequest {
+  createdAt: DateTime!
+  createdBy(where: UserWhereInput): User!
+  merged: Boolean!
+  closedAt: DateTime
+  repository(where: RepositoryWhereInput): Repository!
+}
+
+"""A connection to a list of items."""
+type PullRequestConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [PullRequestEdge]!
+  aggregate: AggregatePullRequest!
+}
+
+input PullRequestCreateInput {
+  merged: Boolean
+  closedAt: DateTime
+  createdBy: UserCreateOneWithoutPullRequestsInput!
+  repository: RepositoryCreateOneWithoutPullRequestsInput!
+}
+
+input PullRequestCreateManyWithoutCreatedByInput {
+  create: [PullRequestCreateWithoutCreatedByInput!]
+}
+
+input PullRequestCreateManyWithoutRepositoryInput {
+  create: [PullRequestCreateWithoutRepositoryInput!]
+}
+
+input PullRequestCreateWithoutCreatedByInput {
+  merged: Boolean
+  closedAt: DateTime
+  repository: RepositoryCreateOneWithoutPullRequestsInput!
+}
+
+input PullRequestCreateWithoutRepositoryInput {
+  merged: Boolean
+  closedAt: DateTime
+  createdBy: UserCreateOneWithoutPullRequestsInput!
+}
+
+"""An edge in a connection."""
+type PullRequestEdge {
+  """The item at the end of the edge."""
+  node: PullRequest!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum PullRequestOrderByInput {
+  createdAt_ASC
+  createdAt_DESC
+  merged_ASC
+  merged_DESC
+  closedAt_ASC
+  closedAt_DESC
+  id_ASC
+  id_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type PullRequestPreviousValues {
+  createdAt: DateTime!
+  merged: Boolean!
+  closedAt: DateTime
+}
+
+type PullRequestSubscriptionPayload {
+  mutation: MutationType!
+  node: PullRequest
+  updatedFields: [String!]
+  previousValues: PullRequestPreviousValues
+}
+
+input PullRequestSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PullRequestSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PullRequestSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PullRequestSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: PullRequestWhereInput
+}
+
+input PullRequestUpdateInput {
+  merged: Boolean
+  closedAt: DateTime
+  createdBy: UserUpdateOneRequiredWithoutPullRequestsInput
+  repository: RepositoryUpdateOneRequiredWithoutPullRequestsInput
+}
+
+input PullRequestUpdateManyWithoutCreatedByInput {
+  create: [PullRequestCreateWithoutCreatedByInput!]
+}
+
+input PullRequestUpdateManyWithoutRepositoryInput {
+  create: [PullRequestCreateWithoutRepositoryInput!]
+}
+
+input PullRequestWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PullRequestWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PullRequestWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PullRequestWhereInput!]
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  merged: Boolean
+
+  """All values that are not equal to given value."""
+  merged_not: Boolean
+  closedAt: DateTime
+
+  """All values that are not equal to given value."""
+  closedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  closedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  closedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  closedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  closedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  closedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  closedAt_gte: DateTime
+  createdBy: UserWhereInput
+  repository: RepositoryWhereInput
+}
+
+type Query {
+  bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty]!
+  pullRequests(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PullRequest]!
+  repositories(where: RepositoryWhereInput, orderBy: RepositoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Repository]!
+  issues(where: IssueWhereInput, orderBy: IssueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Issue]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  bounty(where: BountyWhereUniqueInput!): Bounty
+  issue(where: IssueWhereUniqueInput!): Issue
+  user(where: UserWhereUniqueInput!): User
+  bountiesConnection(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BountyConnection!
+  pullRequestsConnection(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PullRequestConnection!
+  repositoriesConnection(where: RepositoryWhereInput, orderBy: RepositoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RepositoryConnection!
+  issuesConnection(where: IssueWhereInput, orderBy: IssueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): IssueConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+type Repository {
+  name: String!
+  url: String
+  issues(where: IssueWhereInput, orderBy: IssueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Issue!]
+  pullRequests(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PullRequest!]
+}
+
+"""A connection to a list of items."""
+type RepositoryConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RepositoryEdge]!
+  aggregate: AggregateRepository!
+}
+
+input RepositoryCreateInput {
+  name: String!
+  url: String
+  issues: IssueCreateManyInput
+  pullRequests: PullRequestCreateManyWithoutRepositoryInput
+}
+
+input RepositoryCreateOneWithoutPullRequestsInput {
+  create: RepositoryCreateWithoutPullRequestsInput
+}
+
+input RepositoryCreateWithoutPullRequestsInput {
+  name: String!
+  url: String
+  issues: IssueCreateManyInput
+}
+
+"""An edge in a connection."""
+type RepositoryEdge {
+  """The item at the end of the edge."""
+  node: Repository!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum RepositoryOrderByInput {
+  name_ASC
+  name_DESC
+  url_ASC
+  url_DESC
+  id_ASC
+  id_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type RepositoryPreviousValues {
+  name: String!
+  url: String
+}
+
+type RepositorySubscriptionPayload {
+  mutation: MutationType!
+  node: Repository
+  updatedFields: [String!]
+  previousValues: RepositoryPreviousValues
+}
+
+input RepositorySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RepositorySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RepositorySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RepositorySubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: RepositoryWhereInput
+}
+
+input RepositoryUpdateInput {
+  name: String
+  url: String
+  issues: IssueUpdateManyInput
+  pullRequests: PullRequestUpdateManyWithoutRepositoryInput
+}
+
+input RepositoryUpdateOneRequiredWithoutPullRequestsInput {
+  create: RepositoryCreateWithoutPullRequestsInput
+  update: RepositoryUpdateWithoutPullRequestsDataInput
+  upsert: RepositoryUpsertWithoutPullRequestsInput
+}
+
+input RepositoryUpdateWithoutPullRequestsDataInput {
+  name: String
+  url: String
+  issues: IssueUpdateManyInput
+}
+
+input RepositoryUpsertWithoutPullRequestsInput {
+  update: RepositoryUpdateWithoutPullRequestsDataInput!
+  create: RepositoryCreateWithoutPullRequestsInput!
+}
+
+input RepositoryWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RepositoryWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RepositoryWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RepositoryWhereInput!]
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  url: String
+
+  """All values that are not equal to given value."""
+  url_not: String
+
+  """All values that are contained in given list."""
+  url_in: [String!]
+
+  """All values that are not contained in given list."""
+  url_not_in: [String!]
+
+  """All values less than the given value."""
+  url_lt: String
+
+  """All values less than or equal the given value."""
+  url_lte: String
+
+  """All values greater than the given value."""
+  url_gt: String
+
+  """All values greater than or equal the given value."""
+  url_gte: String
+
+  """All values containing the given string."""
+  url_contains: String
+
+  """All values not containing the given string."""
+  url_not_contains: String
+
+  """All values starting with the given string."""
+  url_starts_with: String
+
+  """All values not starting with the given string."""
+  url_not_starts_with: String
+
+  """All values ending with the given string."""
+  url_ends_with: String
+
+  """All values not ending with the given string."""
+  url_not_ends_with: String
+  issues_every: IssueWhereInput
+  issues_some: IssueWhereInput
+  issues_none: IssueWhereInput
+  pullRequests_every: PullRequestWhereInput
+  pullRequests_some: PullRequestWhereInput
+  pullRequests_none: PullRequestWhereInput
+}
+
+type Subscription {
+  bounty(where: BountySubscriptionWhereInput): BountySubscriptionPayload
+  pullRequest(where: PullRequestSubscriptionWhereInput): PullRequestSubscriptionPayload
+  repository(where: RepositorySubscriptionWhereInput): RepositorySubscriptionPayload
+  issue(where: IssueSubscriptionWhereInput): IssueSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type User implements Node {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  balance: Int!
+  stripeID: String
+  bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
+  pullRequests(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PullRequest!]
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
+}
+
+input UserCreateInput {
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  balance: Int
+  stripeID: String
+  bounties: BountyCreateManyWithoutAuthorInput
+  pullRequests: PullRequestCreateManyWithoutCreatedByInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutBountiesInput {
+  create: UserCreateWithoutBountiesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutPullRequestsInput {
+  create: UserCreateWithoutPullRequestsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutBountiesInput {
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  balance: Int
+  stripeID: String
+  pullRequests: PullRequestCreateManyWithoutCreatedByInput
+}
+
+input UserCreateWithoutPullRequestsInput {
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  balance: Int
+  stripeID: String
+  bounties: BountyCreateManyWithoutAuthorInput
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge."""
+  node: User!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserOrderByInput {
+  id_ASC
+  id_DESC
+  firstName_ASC
+  firstName_DESC
+  lastName_ASC
+  lastName_DESC
+  username_ASC
+  username_DESC
+  email_ASC
+  email_DESC
+  balance_ASC
+  balance_DESC
+  stripeID_ASC
+  stripeID_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserPreviousValues {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  balance: Int!
+  stripeID: String
+}
+
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+input UserSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserWhereInput
+}
+
+input UserUpdateDataInput {
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  balance: Int
+  stripeID: String
+  bounties: BountyUpdateManyWithoutAuthorInput
+  pullRequests: PullRequestUpdateManyWithoutCreatedByInput
+}
+
+input UserUpdateInput {
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  balance: Int
+  stripeID: String
+  bounties: BountyUpdateManyWithoutAuthorInput
+  pullRequests: PullRequestUpdateManyWithoutCreatedByInput
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+}
+
+input UserUpdateOneRequiredWithoutBountiesInput {
+  create: UserCreateWithoutBountiesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutBountiesDataInput
+  upsert: UserUpsertWithoutBountiesInput
+}
+
+input UserUpdateOneRequiredWithoutPullRequestsInput {
+  create: UserCreateWithoutPullRequestsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutPullRequestsDataInput
+  upsert: UserUpsertWithoutPullRequestsInput
+}
+
+input UserUpdateWithoutBountiesDataInput {
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  balance: Int
+  stripeID: String
+  pullRequests: PullRequestUpdateManyWithoutCreatedByInput
+}
+
+input UserUpdateWithoutPullRequestsDataInput {
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  balance: Int
+  stripeID: String
+  bounties: BountyUpdateManyWithoutAuthorInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
+}
+
+input UserUpsertWithoutBountiesInput {
+  update: UserUpdateWithoutBountiesDataInput!
+  create: UserCreateWithoutBountiesInput!
+}
+
+input UserUpsertWithoutPullRequestsInput {
+  update: UserUpdateWithoutPullRequestsDataInput!
+  create: UserCreateWithoutPullRequestsInput!
+}
+
+input UserWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  firstName: String
+
+  """All values that are not equal to given value."""
+  firstName_not: String
+
+  """All values that are contained in given list."""
+  firstName_in: [String!]
+
+  """All values that are not contained in given list."""
+  firstName_not_in: [String!]
+
+  """All values less than the given value."""
+  firstName_lt: String
+
+  """All values less than or equal the given value."""
+  firstName_lte: String
+
+  """All values greater than the given value."""
+  firstName_gt: String
+
+  """All values greater than or equal the given value."""
+  firstName_gte: String
+
+  """All values containing the given string."""
+  firstName_contains: String
+
+  """All values not containing the given string."""
+  firstName_not_contains: String
+
+  """All values starting with the given string."""
+  firstName_starts_with: String
+
+  """All values not starting with the given string."""
+  firstName_not_starts_with: String
+
+  """All values ending with the given string."""
+  firstName_ends_with: String
+
+  """All values not ending with the given string."""
+  firstName_not_ends_with: String
+  lastName: String
+
+  """All values that are not equal to given value."""
+  lastName_not: String
+
+  """All values that are contained in given list."""
+  lastName_in: [String!]
+
+  """All values that are not contained in given list."""
+  lastName_not_in: [String!]
+
+  """All values less than the given value."""
+  lastName_lt: String
+
+  """All values less than or equal the given value."""
+  lastName_lte: String
+
+  """All values greater than the given value."""
+  lastName_gt: String
+
+  """All values greater than or equal the given value."""
+  lastName_gte: String
+
+  """All values containing the given string."""
+  lastName_contains: String
+
+  """All values not containing the given string."""
+  lastName_not_contains: String
+
+  """All values starting with the given string."""
+  lastName_starts_with: String
+
+  """All values not starting with the given string."""
+  lastName_not_starts_with: String
+
+  """All values ending with the given string."""
+  lastName_ends_with: String
+
+  """All values not ending with the given string."""
+  lastName_not_ends_with: String
+  username: String
+
+  """All values that are not equal to given value."""
+  username_not: String
+
+  """All values that are contained in given list."""
+  username_in: [String!]
+
+  """All values that are not contained in given list."""
+  username_not_in: [String!]
+
+  """All values less than the given value."""
+  username_lt: String
+
+  """All values less than or equal the given value."""
+  username_lte: String
+
+  """All values greater than the given value."""
+  username_gt: String
+
+  """All values greater than or equal the given value."""
+  username_gte: String
+
+  """All values containing the given string."""
+  username_contains: String
+
+  """All values not containing the given string."""
+  username_not_contains: String
+
+  """All values starting with the given string."""
+  username_starts_with: String
+
+  """All values not starting with the given string."""
+  username_not_starts_with: String
+
+  """All values ending with the given string."""
+  username_ends_with: String
+
+  """All values not ending with the given string."""
+  username_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  balance: Int
+
+  """All values that are not equal to given value."""
+  balance_not: Int
+
+  """All values that are contained in given list."""
+  balance_in: [Int!]
+
+  """All values that are not contained in given list."""
+  balance_not_in: [Int!]
+
+  """All values less than the given value."""
+  balance_lt: Int
+
+  """All values less than or equal the given value."""
+  balance_lte: Int
+
+  """All values greater than the given value."""
+  balance_gt: Int
+
+  """All values greater than or equal the given value."""
+  balance_gte: Int
+  stripeID: String
+
+  """All values that are not equal to given value."""
+  stripeID_not: String
+
+  """All values that are contained in given list."""
+  stripeID_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripeID_not_in: [String!]
+
+  """All values less than the given value."""
+  stripeID_lt: String
+
+  """All values less than or equal the given value."""
+  stripeID_lte: String
+
+  """All values greater than the given value."""
+  stripeID_gt: String
+
+  """All values greater than or equal the given value."""
+  stripeID_gte: String
+
+  """All values containing the given string."""
+  stripeID_contains: String
+
+  """All values not containing the given string."""
+  stripeID_not_contains: String
+
+  """All values starting with the given string."""
+  stripeID_starts_with: String
+
+  """All values not starting with the given string."""
+  stripeID_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripeID_ends_with: String
+
+  """All values not ending with the given string."""
+  stripeID_not_ends_with: String
+  bounties_every: BountyWhereInput
+  bounties_some: BountyWhereInput
+  bounties_none: BountyWhereInput
+  pullRequests_every: PullRequestWhereInput
+  pullRequests_some: PullRequestWhereInput
+  pullRequests_none: PullRequestWhereInput
+}
+
+input UserWhereUniqueInput {
+  id: ID
+  username: String
+  email: String
+}

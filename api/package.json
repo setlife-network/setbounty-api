@@ -4,15 +4,21 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node-dev --no-notify index.js",
+    "server": "node index.js",
+    "dev": "node-dev --no-notify index.js && graphql playground",
     "playground": "graphql playground"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "apollo-link-context": "^1.0.9",
+    "apollo-link-http": "^1.5.5",
     "apollo-server": "^2.1.0",
     "bcryptjs": "^2.4.3",
     "graphql": "^14.0.2",
     "graphql-import": "^0.7.1",
+    "graphql-tools": "^4.0.0",
     "jsonwebtoken": "^8.3.0",
+    "node-fetch": "^2.2.0",
     "tools": "^1.0.0"
   }
 }

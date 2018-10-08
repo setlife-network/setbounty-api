@@ -1,0 +1,5 @@
+# import User, Bounty, Issue, PullRequest, Repository from "../generated/prisma.graphql"
+
+type Query {
+    hello(name: String): String!
+}

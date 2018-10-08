@@ -5,7 +5,7 @@ cd setbounty
 yarn install
 ```
 
-# File Structure
+# Project Architecture
 
 There are three packages within this monorepo
 
@@ -13,7 +13,9 @@ There are three packages within this monorepo
 2. **chrome** - Chrome extension
 3. **tools** - Developer tools which can be used by both `api` and `chrome`
 
-# Development
+# Usage
+
+## Development
 
 To run the API
 ```
@@ -29,13 +31,13 @@ yarn dev
 
 Alternatively you can run `yarn build` or `yarn dev` at the root level **WHICH I HAVEN'T SETUP YET**
 
-## Tooling
+### Tooling
 
 Lerna scripts will run an npm script in each package that contains that script ie. `lerna build` will run a build script for the api and chrome extension all at once.
 
 See [Lerna Docs](https://github.com/lerna/lerna/blob/master/README.md) for more info.
 
-## Installing Dependencies
+### Installing Dependencies
 
 Dependencies should be installed at the package level only. Install devDependencies like webpack, babel, eslint, etc. to the `tools` package.
 
@@ -53,3 +55,5 @@ lerna add tools --scope=api
 # Install babel-core in all modules
 lerna add babel-core
 ```
+
+## Production

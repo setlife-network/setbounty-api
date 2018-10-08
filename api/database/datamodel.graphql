@@ -1,23 +1,48 @@
 type User {
     id: ID! @unique
+    firstName: String!
+    lastName: String!
     username: String! @unique
     email: String! @unique
-    balance: Int!
+    balance: Int! @default(value: 0)
+    stripeID: String
+    bounties: [Bounty!]!
+    pullRequests: [PullRequest!]!
 }
 
-type Issue {
-    id: ID! @unique
-    createdAt: DateTime!
-    number: Int!
-    author: User
-    closed: Boolean!
-    locked: Boolean!
-    bounty: Bounty
-}
-
+# one to one Issue
+# many to one User
 type Bounty {
     id: ID! @unique
     createdAt: DateTime!
-    amount: Int!
-    postedBy: User
+    author: User!
+    amount: Int @default(value: 0)
+    issue: Issue! @unique
+    timeLimit: Int! @default(value: 604800)
+}
+
+# one to one Bounty
+type Issue {
+    id: ID! @unique
+    number: Int!
+    closed: Boolean! @default(value: false)
+    locked: Boolean! @default(value: false)
+    author: User!
+    bounty: Bounty!
+}
+
+# many to one User
+type PullRequest {
+    createdAt: DateTime!
+    createdBy: User!
+    merged: Boolean! @default(value: false)
+    closedAt: DateTime
+    repository: Repository!
+}
+
+type Repository {
+    name: String!
+    url: String
+    issues: [Issue!]!
+    pullRequests: [PullRequest!]!
 }
