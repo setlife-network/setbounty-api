@@ -1,19 +1,11 @@
 # source: http://localhost:4466
-# timestamp: Mon Oct 08 2018 13:24:24 GMT+0200 (Central European Summer Time)
+# timestamp: Mon Oct 08 2018 17:42:51 GMT+0200 (Central European Summer Time)
 
 type AggregateBounty {
   count: Int!
 }
 
 type AggregateIssue {
-  count: Int!
-}
-
-type AggregatePullRequest {
-  count: Int!
-}
-
-type AggregateRepository {
   count: Int!
 }
 
@@ -48,13 +40,8 @@ type BountyConnection {
 input BountyCreateInput {
   amount: Int
   timeLimit: Int
-  author: UserCreateOneWithoutBountiesInput!
+  author: UserCreateOneInput!
   issue: IssueCreateOneWithoutBountyInput!
-}
-
-input BountyCreateManyWithoutAuthorInput {
-  create: [BountyCreateWithoutAuthorInput!]
-  connect: [BountyWhereUniqueInput!]
 }
 
 input BountyCreateOneWithoutIssueInput {
@@ -62,16 +49,10 @@ input BountyCreateOneWithoutIssueInput {
   connect: BountyWhereUniqueInput
 }
 
-input BountyCreateWithoutAuthorInput {
-  amount: Int
-  timeLimit: Int
-  issue: IssueCreateOneWithoutBountyInput!
-}
-
 input BountyCreateWithoutIssueInput {
   amount: Int
   timeLimit: Int
-  author: UserCreateOneWithoutBountiesInput!
+  author: UserCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -145,17 +126,8 @@ input BountySubscriptionWhereInput {
 input BountyUpdateInput {
   amount: Int
   timeLimit: Int
-  author: UserUpdateOneRequiredWithoutBountiesInput
+  author: UserUpdateOneRequiredInput
   issue: IssueUpdateOneRequiredWithoutBountyInput
-}
-
-input BountyUpdateManyWithoutAuthorInput {
-  create: [BountyCreateWithoutAuthorInput!]
-  connect: [BountyWhereUniqueInput!]
-  disconnect: [BountyWhereUniqueInput!]
-  delete: [BountyWhereUniqueInput!]
-  update: [BountyUpdateWithWhereUniqueWithoutAuthorInput!]
-  upsert: [BountyUpsertWithWhereUniqueWithoutAuthorInput!]
 }
 
 input BountyUpdateOneRequiredWithoutIssueInput {
@@ -165,32 +137,15 @@ input BountyUpdateOneRequiredWithoutIssueInput {
   upsert: BountyUpsertWithoutIssueInput
 }
 
-input BountyUpdateWithoutAuthorDataInput {
-  amount: Int
-  timeLimit: Int
-  issue: IssueUpdateOneRequiredWithoutBountyInput
-}
-
 input BountyUpdateWithoutIssueDataInput {
   amount: Int
   timeLimit: Int
-  author: UserUpdateOneRequiredWithoutBountiesInput
-}
-
-input BountyUpdateWithWhereUniqueWithoutAuthorInput {
-  where: BountyWhereUniqueInput!
-  data: BountyUpdateWithoutAuthorDataInput!
+  author: UserUpdateOneRequiredInput
 }
 
 input BountyUpsertWithoutIssueInput {
   update: BountyUpdateWithoutIssueDataInput!
   create: BountyCreateWithoutIssueInput!
-}
-
-input BountyUpsertWithWhereUniqueWithoutAuthorInput {
-  where: BountyWhereUniqueInput!
-  update: BountyUpdateWithoutAuthorDataInput!
-  create: BountyCreateWithoutAuthorInput!
 }
 
 input BountyWhereInput {
@@ -345,11 +300,6 @@ input IssueCreateInput {
   bounty: BountyCreateOneWithoutIssueInput!
 }
 
-input IssueCreateManyInput {
-  create: [IssueCreateInput!]
-  connect: [IssueWhereUniqueInput!]
-}
-
 input IssueCreateOneWithoutBountyInput {
   create: IssueCreateWithoutBountyInput
   connect: IssueWhereUniqueInput
@@ -432,29 +382,12 @@ input IssueSubscriptionWhereInput {
   node: IssueWhereInput
 }
 
-input IssueUpdateDataInput {
-  number: Int
-  closed: Boolean
-  locked: Boolean
-  author: UserUpdateOneRequiredInput
-  bounty: BountyUpdateOneRequiredWithoutIssueInput
-}
-
 input IssueUpdateInput {
   number: Int
   closed: Boolean
   locked: Boolean
   author: UserUpdateOneRequiredInput
   bounty: BountyUpdateOneRequiredWithoutIssueInput
-}
-
-input IssueUpdateManyInput {
-  create: [IssueCreateInput!]
-  connect: [IssueWhereUniqueInput!]
-  disconnect: [IssueWhereUniqueInput!]
-  delete: [IssueWhereUniqueInput!]
-  update: [IssueUpdateWithWhereUniqueNestedInput!]
-  upsert: [IssueUpsertWithWhereUniqueNestedInput!]
 }
 
 input IssueUpdateOneRequiredWithoutBountyInput {
@@ -471,20 +404,9 @@ input IssueUpdateWithoutBountyDataInput {
   author: UserUpdateOneRequiredInput
 }
 
-input IssueUpdateWithWhereUniqueNestedInput {
-  where: IssueWhereUniqueInput!
-  data: IssueUpdateDataInput!
-}
-
 input IssueUpsertWithoutBountyInput {
   update: IssueUpdateWithoutBountyDataInput!
   create: IssueCreateWithoutBountyInput!
-}
-
-input IssueUpsertWithWhereUniqueNestedInput {
-  where: IssueWhereUniqueInput!
-  update: IssueUpdateDataInput!
-  create: IssueCreateInput!
 }
 
 input IssueWhereInput {
@@ -585,8 +507,6 @@ scalar Long
 
 type Mutation {
   createBounty(data: BountyCreateInput!): Bounty!
-  createPullRequest(data: PullRequestCreateInput!): PullRequest!
-  createRepository(data: RepositoryCreateInput!): Repository!
   createIssue(data: IssueCreateInput!): Issue!
   createUser(data: UserCreateInput!): User!
   updateBounty(data: BountyUpdateInput!, where: BountyWhereUniqueInput!): Bounty
@@ -599,13 +519,9 @@ type Mutation {
   upsertIssue(where: IssueWhereUniqueInput!, create: IssueCreateInput!, update: IssueUpdateInput!): Issue!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyBounties(data: BountyUpdateInput!, where: BountyWhereInput): BatchPayload!
-  updateManyPullRequests(data: PullRequestUpdateInput!, where: PullRequestWhereInput): BatchPayload!
-  updateManyRepositories(data: RepositoryUpdateInput!, where: RepositoryWhereInput): BatchPayload!
   updateManyIssues(data: IssueUpdateInput!, where: IssueWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   deleteManyBounties(where: BountyWhereInput): BatchPayload!
-  deleteManyPullRequests(where: PullRequestWhereInput): BatchPayload!
-  deleteManyRepositories(where: RepositoryWhereInput): BatchPayload!
   deleteManyIssues(where: IssueWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
@@ -642,206 +558,14 @@ enum PrismaDatabase {
   default
 }
 
-type PullRequest {
-  createdAt: DateTime!
-  createdBy(where: UserWhereInput): User!
-  merged: Boolean!
-  closedAt: DateTime
-  repository(where: RepositoryWhereInput): Repository!
-}
-
-"""A connection to a list of items."""
-type PullRequestConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [PullRequestEdge]!
-  aggregate: AggregatePullRequest!
-}
-
-input PullRequestCreateInput {
-  merged: Boolean
-  closedAt: DateTime
-  createdBy: UserCreateOneWithoutPullRequestsInput!
-  repository: RepositoryCreateOneWithoutPullRequestsInput!
-}
-
-input PullRequestCreateManyWithoutCreatedByInput {
-  create: [PullRequestCreateWithoutCreatedByInput!]
-}
-
-input PullRequestCreateManyWithoutRepositoryInput {
-  create: [PullRequestCreateWithoutRepositoryInput!]
-}
-
-input PullRequestCreateWithoutCreatedByInput {
-  merged: Boolean
-  closedAt: DateTime
-  repository: RepositoryCreateOneWithoutPullRequestsInput!
-}
-
-input PullRequestCreateWithoutRepositoryInput {
-  merged: Boolean
-  closedAt: DateTime
-  createdBy: UserCreateOneWithoutPullRequestsInput!
-}
-
-"""An edge in a connection."""
-type PullRequestEdge {
-  """The item at the end of the edge."""
-  node: PullRequest!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum PullRequestOrderByInput {
-  createdAt_ASC
-  createdAt_DESC
-  merged_ASC
-  merged_DESC
-  closedAt_ASC
-  closedAt_DESC
-  id_ASC
-  id_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type PullRequestPreviousValues {
-  createdAt: DateTime!
-  merged: Boolean!
-  closedAt: DateTime
-}
-
-type PullRequestSubscriptionPayload {
-  mutation: MutationType!
-  node: PullRequest
-  updatedFields: [String!]
-  previousValues: PullRequestPreviousValues
-}
-
-input PullRequestSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [PullRequestSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [PullRequestSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [PullRequestSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: PullRequestWhereInput
-}
-
-input PullRequestUpdateInput {
-  merged: Boolean
-  closedAt: DateTime
-  createdBy: UserUpdateOneRequiredWithoutPullRequestsInput
-  repository: RepositoryUpdateOneRequiredWithoutPullRequestsInput
-}
-
-input PullRequestUpdateManyWithoutCreatedByInput {
-  create: [PullRequestCreateWithoutCreatedByInput!]
-}
-
-input PullRequestUpdateManyWithoutRepositoryInput {
-  create: [PullRequestCreateWithoutRepositoryInput!]
-}
-
-input PullRequestWhereInput {
-  """Logical AND on all given filters."""
-  AND: [PullRequestWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [PullRequestWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [PullRequestWhereInput!]
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  merged: Boolean
-
-  """All values that are not equal to given value."""
-  merged_not: Boolean
-  closedAt: DateTime
-
-  """All values that are not equal to given value."""
-  closedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  closedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  closedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  closedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  closedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  closedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  closedAt_gte: DateTime
-  createdBy: UserWhereInput
-  repository: RepositoryWhereInput
-}
-
 type Query {
   bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty]!
-  pullRequests(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PullRequest]!
-  repositories(where: RepositoryWhereInput, orderBy: RepositoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Repository]!
   issues(where: IssueWhereInput, orderBy: IssueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Issue]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   bounty(where: BountyWhereUniqueInput!): Bounty
   issue(where: IssueWhereUniqueInput!): Issue
   user(where: UserWhereUniqueInput!): User
   bountiesConnection(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BountyConnection!
-  pullRequestsConnection(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PullRequestConnection!
-  repositoriesConnection(where: RepositoryWhereInput, orderBy: RepositoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RepositoryConnection!
   issuesConnection(where: IssueWhereInput, orderBy: IssueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): IssueConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
@@ -852,231 +576,8 @@ type Query {
   ): Node
 }
 
-type Repository {
-  name: String!
-  url: String
-  issues(where: IssueWhereInput, orderBy: IssueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Issue!]
-  pullRequests(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PullRequest!]
-}
-
-"""A connection to a list of items."""
-type RepositoryConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [RepositoryEdge]!
-  aggregate: AggregateRepository!
-}
-
-input RepositoryCreateInput {
-  name: String!
-  url: String
-  issues: IssueCreateManyInput
-  pullRequests: PullRequestCreateManyWithoutRepositoryInput
-}
-
-input RepositoryCreateOneWithoutPullRequestsInput {
-  create: RepositoryCreateWithoutPullRequestsInput
-}
-
-input RepositoryCreateWithoutPullRequestsInput {
-  name: String!
-  url: String
-  issues: IssueCreateManyInput
-}
-
-"""An edge in a connection."""
-type RepositoryEdge {
-  """The item at the end of the edge."""
-  node: Repository!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum RepositoryOrderByInput {
-  name_ASC
-  name_DESC
-  url_ASC
-  url_DESC
-  id_ASC
-  id_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type RepositoryPreviousValues {
-  name: String!
-  url: String
-}
-
-type RepositorySubscriptionPayload {
-  mutation: MutationType!
-  node: Repository
-  updatedFields: [String!]
-  previousValues: RepositoryPreviousValues
-}
-
-input RepositorySubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [RepositorySubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [RepositorySubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [RepositorySubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: RepositoryWhereInput
-}
-
-input RepositoryUpdateInput {
-  name: String
-  url: String
-  issues: IssueUpdateManyInput
-  pullRequests: PullRequestUpdateManyWithoutRepositoryInput
-}
-
-input RepositoryUpdateOneRequiredWithoutPullRequestsInput {
-  create: RepositoryCreateWithoutPullRequestsInput
-  update: RepositoryUpdateWithoutPullRequestsDataInput
-  upsert: RepositoryUpsertWithoutPullRequestsInput
-}
-
-input RepositoryUpdateWithoutPullRequestsDataInput {
-  name: String
-  url: String
-  issues: IssueUpdateManyInput
-}
-
-input RepositoryUpsertWithoutPullRequestsInput {
-  update: RepositoryUpdateWithoutPullRequestsDataInput!
-  create: RepositoryCreateWithoutPullRequestsInput!
-}
-
-input RepositoryWhereInput {
-  """Logical AND on all given filters."""
-  AND: [RepositoryWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [RepositoryWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [RepositoryWhereInput!]
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  url: String
-
-  """All values that are not equal to given value."""
-  url_not: String
-
-  """All values that are contained in given list."""
-  url_in: [String!]
-
-  """All values that are not contained in given list."""
-  url_not_in: [String!]
-
-  """All values less than the given value."""
-  url_lt: String
-
-  """All values less than or equal the given value."""
-  url_lte: String
-
-  """All values greater than the given value."""
-  url_gt: String
-
-  """All values greater than or equal the given value."""
-  url_gte: String
-
-  """All values containing the given string."""
-  url_contains: String
-
-  """All values not containing the given string."""
-  url_not_contains: String
-
-  """All values starting with the given string."""
-  url_starts_with: String
-
-  """All values not starting with the given string."""
-  url_not_starts_with: String
-
-  """All values ending with the given string."""
-  url_ends_with: String
-
-  """All values not ending with the given string."""
-  url_not_ends_with: String
-  issues_every: IssueWhereInput
-  issues_some: IssueWhereInput
-  issues_none: IssueWhereInput
-  pullRequests_every: PullRequestWhereInput
-  pullRequests_some: PullRequestWhereInput
-  pullRequests_none: PullRequestWhereInput
-}
-
 type Subscription {
   bounty(where: BountySubscriptionWhereInput): BountySubscriptionPayload
-  pullRequest(where: PullRequestSubscriptionWhereInput): PullRequestSubscriptionPayload
-  repository(where: RepositorySubscriptionWhereInput): RepositorySubscriptionPayload
   issue(where: IssueSubscriptionWhereInput): IssueSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -1089,8 +590,6 @@ type User implements Node {
   email: String!
   balance: Int!
   stripeID: String
-  bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
-  pullRequests(where: PullRequestWhereInput, orderBy: PullRequestOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PullRequest!]
 }
 
 """A connection to a list of items."""
@@ -1110,43 +609,11 @@ input UserCreateInput {
   email: String!
   balance: Int
   stripeID: String
-  bounties: BountyCreateManyWithoutAuthorInput
-  pullRequests: PullRequestCreateManyWithoutCreatedByInput
 }
 
 input UserCreateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
-}
-
-input UserCreateOneWithoutBountiesInput {
-  create: UserCreateWithoutBountiesInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateOneWithoutPullRequestsInput {
-  create: UserCreateWithoutPullRequestsInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateWithoutBountiesInput {
-  firstName: String!
-  lastName: String!
-  username: String!
-  email: String!
-  balance: Int
-  stripeID: String
-  pullRequests: PullRequestCreateManyWithoutCreatedByInput
-}
-
-input UserCreateWithoutPullRequestsInput {
-  firstName: String!
-  lastName: String!
-  username: String!
-  email: String!
-  balance: Int
-  stripeID: String
-  bounties: BountyCreateManyWithoutAuthorInput
 }
 
 """An edge in a connection."""
@@ -1235,8 +702,6 @@ input UserUpdateDataInput {
   email: String
   balance: Int
   stripeID: String
-  bounties: BountyUpdateManyWithoutAuthorInput
-  pullRequests: PullRequestUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateInput {
@@ -1246,8 +711,6 @@ input UserUpdateInput {
   email: String
   balance: Int
   stripeID: String
-  bounties: BountyUpdateManyWithoutAuthorInput
-  pullRequests: PullRequestUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateOneRequiredInput {
@@ -1257,53 +720,9 @@ input UserUpdateOneRequiredInput {
   upsert: UserUpsertNestedInput
 }
 
-input UserUpdateOneRequiredWithoutBountiesInput {
-  create: UserCreateWithoutBountiesInput
-  connect: UserWhereUniqueInput
-  update: UserUpdateWithoutBountiesDataInput
-  upsert: UserUpsertWithoutBountiesInput
-}
-
-input UserUpdateOneRequiredWithoutPullRequestsInput {
-  create: UserCreateWithoutPullRequestsInput
-  connect: UserWhereUniqueInput
-  update: UserUpdateWithoutPullRequestsDataInput
-  upsert: UserUpsertWithoutPullRequestsInput
-}
-
-input UserUpdateWithoutBountiesDataInput {
-  firstName: String
-  lastName: String
-  username: String
-  email: String
-  balance: Int
-  stripeID: String
-  pullRequests: PullRequestUpdateManyWithoutCreatedByInput
-}
-
-input UserUpdateWithoutPullRequestsDataInput {
-  firstName: String
-  lastName: String
-  username: String
-  email: String
-  balance: Int
-  stripeID: String
-  bounties: BountyUpdateManyWithoutAuthorInput
-}
-
 input UserUpsertNestedInput {
   update: UserUpdateDataInput!
   create: UserCreateInput!
-}
-
-input UserUpsertWithoutBountiesInput {
-  update: UserUpdateWithoutBountiesDataInput!
-  create: UserCreateWithoutBountiesInput!
-}
-
-input UserUpsertWithoutPullRequestsInput {
-  update: UserUpdateWithoutPullRequestsDataInput!
-  create: UserCreateWithoutPullRequestsInput!
 }
 
 input UserWhereInput {
@@ -1577,12 +996,6 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   stripeID_not_ends_with: String
-  bounties_every: BountyWhereInput
-  bounties_some: BountyWhereInput
-  bounties_none: BountyWhereInput
-  pullRequests_every: PullRequestWhereInput
-  pullRequests_some: PullRequestWhereInput
-  pullRequests_none: PullRequestWhereInput
 }
 
 input UserWhereUniqueInput {

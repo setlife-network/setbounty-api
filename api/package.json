@@ -5,16 +5,16 @@
   "license": "MIT",
   "scripts": {
     "server": "node index.js",
-    "dev": "node-dev --no-notify index.js && graphql playground",
+    "dev": "node-dev --no-notify index.js",
     "playground": "graphql playground"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "apollo-link-context": "^1.0.9",
+    "apollo-link-error": "^1.1.1",
     "apollo-link-http": "^1.5.5",
     "apollo-server": "^2.1.0",
-    "babel-loader": "^8.0.4",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^6.0.0",
     "graphql": "^14.0.2",
     "graphql-import": "^0.7.1",
     "graphql-tools": "^4.0.0",

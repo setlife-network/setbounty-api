@@ -13,16 +13,17 @@ const http = new HttpLink({
 
 const link = setContext((request, previousContext) => ({
     headers: {
-      'Authorization': `Bearer 8437d8043a168d3cc9d8fe80b084aadf76cb9695`,
+        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+        // Authorization: `Bearer ${previousContext.graphqlContext.authKey}`
     }
 })).concat(http)
 
-export default async function createSchema() {
+export default async function createGithubSchema() {
     const schema = await introspectSchema(link)
-    const executableSchema = makeRemoteExecutableSchema({
+    const githubSchema = makeRemoteExecutableSchema({
         schema,
         link
     })
 
-    return executableSchema
+    return githubSchema
 }

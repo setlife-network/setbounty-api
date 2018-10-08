@@ -15,7 +15,10 @@ export default async function createSchema() {
         }
     })
 
-    const github = await createGithubSchema()
+    const github = await createGithubSchema().catch(err => {
+        console.log('YOU DONE FUCKED UP')
+        console.error(err)
+    })
 
     return mergeSchemas({
         schemas: [

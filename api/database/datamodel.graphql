@@ -6,12 +6,9 @@ type User {
     email: String! @unique
     balance: Int! @default(value: 0)
     stripeID: String
-    bounties: [Bounty!]!
-    pullRequests: [PullRequest!]!
+    # bounties: [Bounty!]!
 }
 
-# one to one Issue
-# many to one User
 type Bounty {
     id: ID! @unique
     createdAt: DateTime!
@@ -29,20 +26,4 @@ type Issue {
     locked: Boolean! @default(value: false)
     author: User!
     bounty: Bounty!
-}
-
-# many to one User
-type PullRequest {
-    createdAt: DateTime!
-    createdBy: User!
-    merged: Boolean! @default(value: false)
-    closedAt: DateTime
-    repository: Repository!
-}
-
-type Repository {
-    name: String!
-    url: String
-    issues: [Issue!]!
-    pullRequests: [PullRequest!]!
 }

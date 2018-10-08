@@ -1,6 +1,6 @@
+require('dotenv').config()
 import { ApolloServer } from 'apollo-server'
 import createSchema from './schema'
-// import schema from './schema'
 
 async function runServer() {
     const schema = await createSchema()
