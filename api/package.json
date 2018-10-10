@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "server": "node index.js",
-    "dev": "node-dev --no-notify index.js",
+    "dev": "nodemon --exec babel-node ./src/server.js",
     "build": "webpack",
     "playground": "graphql playground"
   },

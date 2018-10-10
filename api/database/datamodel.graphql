@@ -2,7 +2,7 @@ type User {
     id: ID! @unique
     createdAt: DateTime!
     username: String! @unique
-    email: String! @unique
+    email: String @unique
     balance: Int @default(value: 0)
     stripeID: String
     # bounties: [Bounty!]!

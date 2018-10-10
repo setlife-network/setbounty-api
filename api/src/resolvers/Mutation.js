@@ -5,7 +5,7 @@ const { JWT_SECRET, CLIENT_ID } = process.env
 
 export async function signup(_, { username }, context, info) {
     // Github OAuth authentication
-    const code = await context.dataSources.github.authorize()
+    const code = await context.dataSources.github.getToken()
     // create user in database
     // const user = await context.db.mutation.createUser({
     //     username,

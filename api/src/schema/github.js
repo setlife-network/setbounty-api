@@ -14,13 +14,17 @@ const http = new HttpLink({
     fetch
 })
 
-const link = setContext((request, previousContext) => ({
-    headers: {
-        // TODO use token returned from OAuth
-        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-        // Authorization: `Bearer ${previousContext.graphqlContext.authKey}`
+const link = setContext((request, previousContext) => {
+    // console.log(request)
+    // console.log(previousContext)
+    return {
+        headers: {
+            // TODO use token returned from OAuth
+            'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+            // Authorization: `Bearer ${previousContext.graphqlContext.authKey}`
+        }
     }
-})).concat(http)
+}).concat(http)
 
 export default async function createGithubSchema() {
     const schema = await introspectSchema(link)

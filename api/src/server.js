@@ -1,29 +1,28 @@
-require('dotenv').config()
-
 import { ApolloServer } from 'apollo-server'
 import { Prisma } from 'prisma-binding'
 import createSchema from './schema'
-// import GitHub from './services/github'
+import config from './config'
+import GitHub from './services/github'
 
 async function runServer() {
     const schema = await createSchema()
     const server = new ApolloServer({
         schema,
+        dataSources() {
+            return {
+                github: new GitHub()
+            }
+        },
         context: req => {
             return {
                 ...req,
                 db: new Prisma({
                     typeDefs: 'src/generated/prisma.graphql',
                     endpoint: 'http://localhost:4466',
-                    secret: process.env.JWT_SECRET
+                    secret: config.jwtSecret
                 })
             }
-        },
-        // dataSources() {
-        //     return {
-        //         github: new GitHub()
-        //     }
-        // }
+        }
     })
 
     server.listen({ port: 4000 }).then(({ url }) => {
