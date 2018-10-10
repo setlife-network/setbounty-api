@@ -3,3 +3,12 @@
 type Query {
     hello(name: String): String!
 }
+
+type Mutation {
+    signup(login: String): AuthPayload!
+}
+
+type AuthPayload {
+    token: String
+    user: User
+}

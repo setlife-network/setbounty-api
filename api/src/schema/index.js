@@ -16,7 +16,7 @@ export default async function createSchema() {
     })
 
     const github = await createGithubSchema().catch(err => {
-        console.log('YOU DONE FUCKED UP')
+        console.log('Failed to create Github schema...')
         console.error(err)
     })
 

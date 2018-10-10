@@ -1,6 +1,9 @@
 import {
     introspectSchema,
-    makeRemoteExecutableSchema
+    makeRemoteExecutableSchema,
+    transformSchema,
+    RenameTypes,
+    RenameRootFields
 } from 'graphql-tools'
 import { HttpLink } from 'apollo-link-http'
 import { setContext } from 'apollo-link-context'
@@ -13,6 +16,7 @@ const http = new HttpLink({
 
 const link = setContext((request, previousContext) => ({
     headers: {
+        // TODO use token returned from OAuth
         'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         // Authorization: `Bearer ${previousContext.graphqlContext.authKey}`
     }
@@ -25,5 +29,12 @@ export default async function createGithubSchema() {
         link
     })
 
-    return githubSchema
+    // TODO remove unnecessary Github API operations
+    const transformedSchema = transformSchema(githubSchema, [
+        new RenameTypes((name) => `GH__${name}`),
+        new RenameRootFields((operation, name) => `GH__${name}`),
+    ])
+
+    // return githubSchema
+    return transformedSchema
 }

@@ -1,5 +1,5 @@
 import Query from './Query'
-// import Mutation from './Mutation'
+// import * as Mutation from './Mutation'
 
 export default {
     Query,
