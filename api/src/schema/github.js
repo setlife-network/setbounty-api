@@ -31,8 +31,8 @@ export default async function createGithubSchema() {
 
     // TODO remove unnecessary Github API operations
     const transformedSchema = transformSchema(githubSchema, [
-        new RenameTypes((name) => `GH__${name}`),
-        new RenameRootFields((operation, name) => `GH__${name}`),
+        new RenameTypes((name) => `Github${name}`),
+        new RenameRootFields((operation, name) => `Github_${name}`),
     ])
 
     // return githubSchema
