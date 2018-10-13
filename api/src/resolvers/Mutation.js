@@ -1,22 +1,30 @@
-import { hash } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { getToken, getUser } from '../services/github'
+import config from '../config'
 
-const { JWT_SECRET, CLIENT_ID } = process.env
+async function getPrismaUser(context, githubUserId) {
+    return await context.db.query.user({ where: { githubUserId }})
+}
 
-export async function signup(_, { username }, context, info) {
-    // Github OAuth authentication
-    const code = await context.dataSources.github.getToken()
-    // create user in database
-    // const user = await context.db.mutation.createUser({
-    //     username,
-    //     email
-    // })
+export async function authenticate(_, { code }, context, info) {
+    const githubToken = await getToken(code)
+    const githubUser = await getUser(githubToken)
 
-    // make a jwt
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET)
+    let user = await getPrismaUser(context, githubUser.id)
+
+    if (!user) {
+        console.log('no existing user')
+        user = await context.db.mutation.createUser({
+            data: {
+                githubUserId: githubUser.id,
+                username: githubUser.login,
+                name: githubUser.name
+            }
+        })
+    }
 
     return {
-        token,
+        token: jwt.sign({ userId: user.id }, config.jwtSecret),
         user
     }
 }

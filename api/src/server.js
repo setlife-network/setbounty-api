@@ -1,19 +1,16 @@
 import { ApolloServer } from 'apollo-server'
 import { Prisma } from 'prisma-binding'
+
 import createSchema from './schema'
 import config from './config'
-import GitHub from './services/github'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 async function runServer() {
     const schema = await createSchema()
     const server = new ApolloServer({
         schema,
-        dataSources() {
-            return {
-                github: new GitHub()
-            }
-        },
-        context: req => {
+        context: ({ req }) => {
             return {
                 ...req,
                 db: new Prisma({
@@ -26,7 +23,7 @@ async function runServer() {
     })
 
     server.listen({ port: 4000 }).then(({ url }) => {
-        console.log(`Server ready at ${url}graphql`)
+        console.log(`🚀  Server ready at ${url}graphql`)
     })
 }
 

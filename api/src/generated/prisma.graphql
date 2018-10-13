@@ -375,9 +375,8 @@ type User {
   id: ID!
   createdAt: DateTime!
   username: String!
-  email: String!
-  balance: Int
-  stripeID: String
+  name: String!
+  githubUserId: Int!
 }
 
 type UserConnection {
@@ -388,9 +387,8 @@ type UserConnection {
 
 input UserCreateInput {
   username: String!
-  email: String!
-  balance: Int
-  stripeID: String
+  name: String!
+  githubUserId: Int!
 }
 
 input UserCreateOneInput {
@@ -410,12 +408,10 @@ enum UserOrderByInput {
   createdAt_DESC
   username_ASC
   username_DESC
-  email_ASC
-  email_DESC
-  balance_ASC
-  balance_DESC
-  stripeID_ASC
-  stripeID_DESC
+  name_ASC
+  name_DESC
+  githubUserId_ASC
+  githubUserId_DESC
   updatedAt_ASC
   updatedAt_DESC
 }
@@ -424,9 +420,8 @@ type UserPreviousValues {
   id: ID!
   createdAt: DateTime!
   username: String!
-  email: String!
-  balance: Int
-  stripeID: String
+  name: String!
+  githubUserId: Int!
 }
 
 type UserSubscriptionPayload {
@@ -449,16 +444,14 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateDataInput {
   username: String
-  email: String
-  balance: Int
-  stripeID: String
+  name: String
+  githubUserId: Int
 }
 
 input UserUpdateInput {
   username: String
-  email: String
-  balance: Int
-  stripeID: String
+  name: String
+  githubUserId: Int
 }
 
 input UserUpdateOneRequiredInput {
@@ -510,42 +503,28 @@ input UserWhereInput {
   username_not_starts_with: String
   username_ends_with: String
   username_not_ends_with: String
-  email: String
-  email_not: String
-  email_in: [String!]
-  email_not_in: [String!]
-  email_lt: String
-  email_lte: String
-  email_gt: String
-  email_gte: String
-  email_contains: String
-  email_not_contains: String
-  email_starts_with: String
-  email_not_starts_with: String
-  email_ends_with: String
-  email_not_ends_with: String
-  balance: Int
-  balance_not: Int
-  balance_in: [Int!]
-  balance_not_in: [Int!]
-  balance_lt: Int
-  balance_lte: Int
-  balance_gt: Int
-  balance_gte: Int
-  stripeID: String
-  stripeID_not: String
-  stripeID_in: [String!]
-  stripeID_not_in: [String!]
-  stripeID_lt: String
-  stripeID_lte: String
-  stripeID_gt: String
-  stripeID_gte: String
-  stripeID_contains: String
-  stripeID_not_contains: String
-  stripeID_starts_with: String
-  stripeID_not_starts_with: String
-  stripeID_ends_with: String
-  stripeID_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  githubUserId: Int
+  githubUserId_not: Int
+  githubUserId_in: [Int!]
+  githubUserId_not_in: [Int!]
+  githubUserId_lt: Int
+  githubUserId_lte: Int
+  githubUserId_gt: Int
+  githubUserId_gte: Int
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
@@ -554,5 +533,5 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: ID
   username: String
-  email: String
+  githubUserId: Int
 }

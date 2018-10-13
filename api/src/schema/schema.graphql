@@ -5,10 +5,10 @@ type Query {
 }
 
 type Mutation {
-    signup(login: String): AuthPayload!
+    authenticate(code: String!): AuthPayload
 }
 
 type AuthPayload {
-    token: String
-    user: User
+    token: String!
+    user: User!
 }
