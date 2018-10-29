@@ -6,7 +6,7 @@ async function getPrismaUser(context, githubUserId) {
     return await context.db.query.user({ where: { githubUserId }})
 }
 
-export async function authenticate(_, { code }, context, info) {
+export async function authenticate(_, { code }, context) {
     const githubToken = await getToken(code)
     const githubUser = await getUser(githubToken)
 

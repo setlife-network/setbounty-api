@@ -3,12 +3,11 @@ type User {
     createdAt: DateTime!
     username: String! @unique
     name: String!
-    githubUserId: Int! @unique
-
-    # email: String @unique
-    # balance: Int @default(value: 0)
-    # stripeID: String
-    # bounties: [Bounty!]!
+    balance: Int @default(value: 0)
+    stripeID: String
+    createdBounties: [Bounty]
+    claimedBounties: [Bounty]
+    savedBounties: [Bounty]
 }
 
 type Bounty {
@@ -16,16 +15,9 @@ type Bounty {
     createdAt: DateTime!
     author: User!
     amount: Int @default(value: 0)
-    issue: Issue! @unique
+    issueNumber: Int!
+    repository: String!
     timeLimit: Int! @default(value: 604800)
-}
-
-# one to one Bounty
-type Issue {
-    id: ID! @unique
-    number: Int!
-    closed: Boolean! @default(value: false)
-    locked: Boolean! @default(value: false)
-    author: User!
-    bounty: Bounty!
+    stripeID: String!
+    claimed: Boolean!
 }
