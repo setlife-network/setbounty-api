@@ -5,6 +5,8 @@ cd setbounty
 yarn install
 ```
 
+Make sure you have Docker installed to run the database locally.
+
 # Project Architecture
 
 There are three packages within this monorepo
@@ -17,19 +19,37 @@ There are three packages within this monorepo
 
 ## Development
 
+If this is your first time running the project, run the following commands to build a local version of the database.
+
+```
+cd api
+docker-compuse up -d
+```
+
 To run the API
 ```
 cd api
 yarn dev
 ```
 
-To bundle the Chrome extension
-```
-cd chrome
-yarn dev
+Rudimentary authentication process
+1. Go to [this link](https://github.com/login/oauth/authorize?client_id=249f628624647c891f18&scope=repo%20read:user%20user:email&redirect_uri=http://localhost:4000/graphql)
+2. Copy the code from the url `http://localhost:4000/graphql?code={YOUR_CODE}`
+3. Run the following mutation in the GraphQLPlayground in your browser
+```graphql
+mutation {
+    authenticate(code: $YOUR_CODE) {
+        token
+        user {
+            id
+            username
+            name
+        }
+    }
+}
 ```
 
-~~Alternatively you can run `yarn build` or `yarn dev` at the root level~~
+<!-- Alternatively you can run `yarn build` or `yarn dev` at the root level -->
 
 ### Tooling
 
