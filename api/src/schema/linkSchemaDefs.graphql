@@ -1,0 +1,4 @@
+extend type Issue {
+    # bounties: [Bounty]
+    testField: String
+}

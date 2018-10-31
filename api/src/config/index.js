@@ -4,7 +4,8 @@ export default {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         callbackURL: 'http://localhost:4000/graphql',
-        scope: 'repo read:user user:email',
+        scope: 'notifications, read:repo_hook, repo, user, write:discussion',
+        token: process.env.GITHUB_TOKEN
     },
     jwtSecret: process.env.JWT_SECRET
 }

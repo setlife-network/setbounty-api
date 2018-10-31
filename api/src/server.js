@@ -3,6 +3,7 @@ import { Prisma } from 'prisma-binding'
 
 import createSchema from './schema'
 import config from './config'
+import GithubAPI from './services/GithubAPI'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -10,6 +11,11 @@ async function runServer() {
     const schema = await createSchema()
     const server = new ApolloServer({
         schema,
+        dataSources: () => {
+            return {
+                github: new GithubAPI()
+            }
+        },
         context: ({ req }) => {
             return {
                 ...req,

@@ -2,6 +2,7 @@
 
 type Query {
     hello(name: String): String!
+    user(username: String): User!
 }
 
 type Mutation {
@@ -11,26 +12,4 @@ type Mutation {
 type AuthPayload {
     token: String!
     user: User!
-}
-
-extend type User {
-    pullRequests: [GithubPullRequest]
-}
-
-extend type GithubIssue {
-    bounties: [Bounty]
-}
-
-extend type Bounty {
-    issue: GithubIssue!
-    pullRequests: GithubPullRequest
-}
-
-extend type GithubPullRequest {
-    issue: GithubIssue
-    amount: Int
-}
-
-extend type GithubRepository {
-    bounties: [Bounty]
 }

@@ -5,19 +5,25 @@ type User {
     name: String!
     balance: Int @default(value: 0)
     stripeID: String
-    createdBounties: [Bounty]
-    claimedBounties: [Bounty]
-    savedBounties: [Bounty]
+    postedBounties: [Bounty!]! @relation(name: "Posted")
+    savedBounties: [Bounty!]! @relation(name: "Saved")
 }
 
 type Bounty {
     id: ID! @unique
     createdAt: DateTime!
-    author: User!
-    amount: Int @default(value: 0)
+    createdBy: User! @relation(name: "Posted")
+    expirationDate: DateTime!
+    amount: Int!
     issueNumber: Int!
     repository: String!
-    timeLimit: Int! @default(value: 604800)
-    stripeID: String!
-    claimed: Boolean!
+    status: BountyState! @default(value: OPEN)
+    saves: [User!]! @relation(name: "Saved")
+}
+
+enum BountyState {
+    OPEN,
+    PENDING,
+    CLOSED,
+    EXPIRED
 }
