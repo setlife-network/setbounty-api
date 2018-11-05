@@ -2,10 +2,11 @@ endpoint: http://localhost:4466
 datamodel: datamodel.graphql
 secret: mysecret123
 
-generate:
-  - generator: graphql-schema
-    output: ../src/generated
+# generate:
+#   - generator: graphql-schema
+#     output: ../src/generated
 
 hooks:
   post-deploy:
-    - prisma generate
+    - graphql get-schema --project=database
+    - graphql get-schema --project=github

@@ -5,6 +5,7 @@ type User {
     name: String!
     balance: Int @default(value: 0)
     stripeID: String
+    isBanned: Boolean @default(value: "false")
     postedBounties: [Bounty!]! @relation(name: "Posted")
     savedBounties: [Bounty!]! @relation(name: "Saved")
 }
@@ -17,7 +18,7 @@ type Bounty {
     amount: Int!
     issueNumber: Int!
     repository: String!
-    status: BountyState! @default(value: OPEN)
+    state: BountyState! @default(value: OPEN)
     saves: [User!]! @relation(name: "Saved")
 }
 

@@ -1,0 +1,31 @@
+# import User, Bounty, BountyState from "../generated/prisma.graphql"
+# import Repository from "./github.graphql"
+
+type Query {
+    hello(name: String): String!
+    favoriteRepos: [Repository!]!
+}
+
+# type Mutation {
+#     authenticate(code: String!): AuthPayload
+# }
+
+# type AuthPayload {
+#     token: String!
+#     user: User!
+# }
+
+# type Issue {
+#     number: Int
+#     title: String
+#     createdAt: DateTime
+#     formattedInfo: String
+#     totalBounty: Int
+#     state: BountyState
+#     reviewExpirationDate: DateTime
+#     author: User
+#     bounties: [Bounty]
+#     saves: [User]
+#     comments: [Comment]
+#     pullRequest: PullRequest
+# }

@@ -1,3 +1,6 @@
+# source: http://localhost:4466
+# timestamp: Mon Nov 05 2018 17:26:53 GMT+0100 (Central European Standard Time)
+
 type AggregateBounty {
   count: Int!
 }
@@ -7,34 +10,39 @@ type AggregateUser {
 }
 
 type BatchPayload {
+  """The number of nodes that have been affected by the Batch operation."""
   count: Long!
 }
 
-type Bounty {
+type Bounty implements Node {
   id: ID!
   createdAt: DateTime!
-  createdBy: User!
+  createdBy(where: UserWhereInput): User!
   expirationDate: DateTime!
   amount: Int!
   issueNumber: Int!
   repository: String!
-  status: BountyState!
+  state: BountyState!
   saves(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
 }
 
+"""A connection to a list of items."""
 type BountyConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [BountyEdge]!
   aggregate: AggregateBounty!
 }
 
 input BountyCreateInput {
-  createdBy: UserCreateOneWithoutPostedBountiesInput!
   expirationDate: DateTime!
   amount: Int!
   issueNumber: Int!
   repository: String!
-  status: BountyState
+  state: BountyState
+  createdBy: UserCreateOneWithoutPostedBountiesInput!
   saves: UserCreateManyWithoutSavedBountiesInput
 }
 
@@ -53,21 +61,25 @@ input BountyCreateWithoutCreatedByInput {
   amount: Int!
   issueNumber: Int!
   repository: String!
-  status: BountyState
+  state: BountyState
   saves: UserCreateManyWithoutSavedBountiesInput
 }
 
 input BountyCreateWithoutSavesInput {
-  createdBy: UserCreateOneWithoutPostedBountiesInput!
   expirationDate: DateTime!
   amount: Int!
   issueNumber: Int!
   repository: String!
-  status: BountyState
+  state: BountyState
+  createdBy: UserCreateOneWithoutPostedBountiesInput!
 }
 
+"""An edge in a connection."""
 type BountyEdge {
+  """The item at the end of the edge."""
   node: Bounty!
+
+  """A cursor for use in pagination."""
   cursor: String!
 }
 
@@ -84,8 +96,8 @@ enum BountyOrderByInput {
   issueNumber_DESC
   repository_ASC
   repository_DESC
-  status_ASC
-  status_DESC
+  state_ASC
+  state_DESC
   updatedAt_ASC
   updatedAt_DESC
 }
@@ -97,13 +109,14 @@ type BountyPreviousValues {
   amount: Int!
   issueNumber: Int!
   repository: String!
-  status: BountyState!
+  state: BountyState!
 }
 
 enum BountyState {
-  OPENED
+  OPEN
   PENDING
   CLOSED
+  EXPIRED
 }
 
 type BountySubscriptionPayload {
@@ -114,40 +127,61 @@ type BountySubscriptionPayload {
 }
 
 input BountySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BountySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BountySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BountySubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
   mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
   updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
   updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
   updatedFields_contains_some: [String!]
   node: BountyWhereInput
-  AND: [BountySubscriptionWhereInput!]
-  OR: [BountySubscriptionWhereInput!]
-  NOT: [BountySubscriptionWhereInput!]
 }
 
 input BountyUpdateInput {
-  createdBy: UserUpdateOneRequiredWithoutPostedBountiesInput
   expirationDate: DateTime
   amount: Int
   issueNumber: Int
   repository: String
-  status: BountyState
+  state: BountyState
+  createdBy: UserUpdateOneRequiredWithoutPostedBountiesInput
   saves: UserUpdateManyWithoutSavedBountiesInput
 }
 
 input BountyUpdateManyWithoutCreatedByInput {
   create: [BountyCreateWithoutCreatedByInput!]
-  delete: [BountyWhereUniqueInput!]
   connect: [BountyWhereUniqueInput!]
   disconnect: [BountyWhereUniqueInput!]
+  delete: [BountyWhereUniqueInput!]
   update: [BountyUpdateWithWhereUniqueWithoutCreatedByInput!]
   upsert: [BountyUpsertWithWhereUniqueWithoutCreatedByInput!]
 }
 
 input BountyUpdateManyWithoutSavesInput {
   create: [BountyCreateWithoutSavesInput!]
-  delete: [BountyWhereUniqueInput!]
   connect: [BountyWhereUniqueInput!]
   disconnect: [BountyWhereUniqueInput!]
+  delete: [BountyWhereUniqueInput!]
   update: [BountyUpdateWithWhereUniqueWithoutSavesInput!]
   upsert: [BountyUpsertWithWhereUniqueWithoutSavesInput!]
 }
@@ -157,17 +191,17 @@ input BountyUpdateWithoutCreatedByDataInput {
   amount: Int
   issueNumber: Int
   repository: String
-  status: BountyState
+  state: BountyState
   saves: UserUpdateManyWithoutSavedBountiesInput
 }
 
 input BountyUpdateWithoutSavesDataInput {
-  createdBy: UserUpdateOneRequiredWithoutPostedBountiesInput
   expirationDate: DateTime
   amount: Int
   issueNumber: Int
   repository: String
-  status: BountyState
+  state: BountyState
+  createdBy: UserUpdateOneRequiredWithoutPostedBountiesInput
 }
 
 input BountyUpdateWithWhereUniqueWithoutCreatedByInput {
@@ -193,77 +227,196 @@ input BountyUpsertWithWhereUniqueWithoutSavesInput {
 }
 
 input BountyWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BountyWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BountyWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BountyWhereInput!]
   id: ID
+
+  """All values that are not equal to given value."""
   id_not: ID
+
+  """All values that are contained in given list."""
   id_in: [ID!]
+
+  """All values that are not contained in given list."""
   id_not_in: [ID!]
+
+  """All values less than the given value."""
   id_lt: ID
+
+  """All values less than or equal the given value."""
   id_lte: ID
+
+  """All values greater than the given value."""
   id_gt: ID
+
+  """All values greater than or equal the given value."""
   id_gte: ID
+
+  """All values containing the given string."""
   id_contains: ID
+
+  """All values not containing the given string."""
   id_not_contains: ID
+
+  """All values starting with the given string."""
   id_starts_with: ID
+
+  """All values not starting with the given string."""
   id_not_starts_with: ID
+
+  """All values ending with the given string."""
   id_ends_with: ID
+
+  """All values not ending with the given string."""
   id_not_ends_with: ID
   createdAt: DateTime
+
+  """All values that are not equal to given value."""
   createdAt_not: DateTime
+
+  """All values that are contained in given list."""
   createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
   createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
   createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
   createdAt_lte: DateTime
+
+  """All values greater than the given value."""
   createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
   createdAt_gte: DateTime
-  createdBy: UserWhereInput
   expirationDate: DateTime
+
+  """All values that are not equal to given value."""
   expirationDate_not: DateTime
+
+  """All values that are contained in given list."""
   expirationDate_in: [DateTime!]
+
+  """All values that are not contained in given list."""
   expirationDate_not_in: [DateTime!]
+
+  """All values less than the given value."""
   expirationDate_lt: DateTime
+
+  """All values less than or equal the given value."""
   expirationDate_lte: DateTime
+
+  """All values greater than the given value."""
   expirationDate_gt: DateTime
+
+  """All values greater than or equal the given value."""
   expirationDate_gte: DateTime
   amount: Int
+
+  """All values that are not equal to given value."""
   amount_not: Int
+
+  """All values that are contained in given list."""
   amount_in: [Int!]
+
+  """All values that are not contained in given list."""
   amount_not_in: [Int!]
+
+  """All values less than the given value."""
   amount_lt: Int
+
+  """All values less than or equal the given value."""
   amount_lte: Int
+
+  """All values greater than the given value."""
   amount_gt: Int
+
+  """All values greater than or equal the given value."""
   amount_gte: Int
   issueNumber: Int
+
+  """All values that are not equal to given value."""
   issueNumber_not: Int
+
+  """All values that are contained in given list."""
   issueNumber_in: [Int!]
+
+  """All values that are not contained in given list."""
   issueNumber_not_in: [Int!]
+
+  """All values less than the given value."""
   issueNumber_lt: Int
+
+  """All values less than or equal the given value."""
   issueNumber_lte: Int
+
+  """All values greater than the given value."""
   issueNumber_gt: Int
+
+  """All values greater than or equal the given value."""
   issueNumber_gte: Int
   repository: String
+
+  """All values that are not equal to given value."""
   repository_not: String
+
+  """All values that are contained in given list."""
   repository_in: [String!]
+
+  """All values that are not contained in given list."""
   repository_not_in: [String!]
+
+  """All values less than the given value."""
   repository_lt: String
+
+  """All values less than or equal the given value."""
   repository_lte: String
+
+  """All values greater than the given value."""
   repository_gt: String
+
+  """All values greater than or equal the given value."""
   repository_gte: String
+
+  """All values containing the given string."""
   repository_contains: String
+
+  """All values not containing the given string."""
   repository_not_contains: String
+
+  """All values starting with the given string."""
   repository_starts_with: String
+
+  """All values not starting with the given string."""
   repository_not_starts_with: String
+
+  """All values ending with the given string."""
   repository_ends_with: String
+
+  """All values not ending with the given string."""
   repository_not_ends_with: String
-  status: BountyState
-  status_not: BountyState
-  status_in: [BountyState!]
-  status_not_in: [BountyState!]
+  state: BountyState
+
+  """All values that are not equal to given value."""
+  state_not: BountyState
+
+  """All values that are contained in given list."""
+  state_in: [BountyState!]
+
+  """All values that are not contained in given list."""
+  state_not_in: [BountyState!]
+  createdBy: UserWhereInput
   saves_every: UserWhereInput
   saves_some: UserWhereInput
   saves_none: UserWhereInput
-  AND: [BountyWhereInput!]
-  OR: [BountyWhereInput!]
-  NOT: [BountyWhereInput!]
 }
 
 input BountyWhereUniqueInput {
@@ -272,21 +425,29 @@ input BountyWhereUniqueInput {
 
 scalar DateTime
 
+"""Raw JSON value"""
+scalar Json
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
 scalar Long
 
 type Mutation {
-  createBounty(data: BountyCreateInput!): Bounty!
-  updateBounty(data: BountyUpdateInput!, where: BountyWhereUniqueInput!): Bounty
-  updateManyBounties(data: BountyUpdateInput!, where: BountyWhereInput): BatchPayload!
-  upsertBounty(where: BountyWhereUniqueInput!, create: BountyCreateInput!, update: BountyUpdateInput!): Bounty!
-  deleteBounty(where: BountyWhereUniqueInput!): Bounty
-  deleteManyBounties(where: BountyWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
+  createBounty(data: BountyCreateInput!): Bounty!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateBounty(data: BountyUpdateInput!, where: BountyWhereUniqueInput!): Bounty
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteBounty(where: BountyWhereUniqueInput!): Bounty
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertBounty(where: BountyWhereUniqueInput!, create: BountyCreateInput!, update: BountyUpdateInput!): Bounty!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  updateManyBounties(data: BountyUpdateInput!, where: BountyWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyBounties(where: BountyWhereInput): BatchPayload!
+  executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
 enum MutationType {
@@ -295,45 +456,69 @@ enum MutationType {
   DELETED
 }
 
+"""An object with an ID"""
 interface Node {
+  """The id of the object."""
   id: ID!
 }
 
+"""Information about pagination in a connection."""
 type PageInfo {
+  """When paginating forwards, are there more items?"""
   hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
   hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
   startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
   endCursor: String
 }
 
+enum PrismaDatabase {
+  default
+}
+
 type Query {
-  bounty(where: BountyWhereUniqueInput!): Bounty
-  bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty]!
-  bountiesConnection(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BountyConnection!
-  user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty]!
+  user(where: UserWhereUniqueInput!): User
+  bounty(where: BountyWhereUniqueInput!): Bounty
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  node(id: ID!): Node
+  bountiesConnection(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BountyConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
 }
 
 type Subscription {
-  bounty(where: BountySubscriptionWhereInput): BountySubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  bounty(where: BountySubscriptionWhereInput): BountySubscriptionPayload
 }
 
-type User {
+type User implements Node {
   id: ID!
   createdAt: DateTime!
   username: String!
   name: String!
   balance: Int
   stripeID: String
+  isBanned: Boolean
   postedBounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
   savedBounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
 }
 
+"""A connection to a list of items."""
 type UserConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [UserEdge]!
   aggregate: AggregateUser!
 }
@@ -343,6 +528,7 @@ input UserCreateInput {
   name: String!
   balance: Int
   stripeID: String
+  isBanned: Boolean
   postedBounties: BountyCreateManyWithoutCreatedByInput
   savedBounties: BountyCreateManyWithoutSavesInput
 }
@@ -362,6 +548,7 @@ input UserCreateWithoutPostedBountiesInput {
   name: String!
   balance: Int
   stripeID: String
+  isBanned: Boolean
   savedBounties: BountyCreateManyWithoutSavesInput
 }
 
@@ -370,11 +557,16 @@ input UserCreateWithoutSavedBountiesInput {
   name: String!
   balance: Int
   stripeID: String
+  isBanned: Boolean
   postedBounties: BountyCreateManyWithoutCreatedByInput
 }
 
+"""An edge in a connection."""
 type UserEdge {
+  """The item at the end of the edge."""
   node: User!
+
+  """A cursor for use in pagination."""
   cursor: String!
 }
 
@@ -391,6 +583,8 @@ enum UserOrderByInput {
   balance_DESC
   stripeID_ASC
   stripeID_DESC
+  isBanned_ASC
+  isBanned_DESC
   updatedAt_ASC
   updatedAt_DESC
 }
@@ -402,6 +596,7 @@ type UserPreviousValues {
   name: String!
   balance: Int
   stripeID: String
+  isBanned: Boolean
 }
 
 type UserSubscriptionPayload {
@@ -412,14 +607,35 @@ type UserSubscriptionPayload {
 }
 
 input UserSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
   mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
   updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
   updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
   updatedFields_contains_some: [String!]
   node: UserWhereInput
-  AND: [UserSubscriptionWhereInput!]
-  OR: [UserSubscriptionWhereInput!]
-  NOT: [UserSubscriptionWhereInput!]
 }
 
 input UserUpdateInput {
@@ -427,24 +643,25 @@ input UserUpdateInput {
   name: String
   balance: Int
   stripeID: String
+  isBanned: Boolean
   postedBounties: BountyUpdateManyWithoutCreatedByInput
   savedBounties: BountyUpdateManyWithoutSavesInput
 }
 
 input UserUpdateManyWithoutSavedBountiesInput {
   create: [UserCreateWithoutSavedBountiesInput!]
-  delete: [UserWhereUniqueInput!]
   connect: [UserWhereUniqueInput!]
   disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
   update: [UserUpdateWithWhereUniqueWithoutSavedBountiesInput!]
   upsert: [UserUpsertWithWhereUniqueWithoutSavedBountiesInput!]
 }
 
 input UserUpdateOneRequiredWithoutPostedBountiesInput {
   create: UserCreateWithoutPostedBountiesInput
+  connect: UserWhereUniqueInput
   update: UserUpdateWithoutPostedBountiesDataInput
   upsert: UserUpsertWithoutPostedBountiesInput
-  connect: UserWhereUniqueInput
 }
 
 input UserUpdateWithoutPostedBountiesDataInput {
@@ -452,6 +669,7 @@ input UserUpdateWithoutPostedBountiesDataInput {
   name: String
   balance: Int
   stripeID: String
+  isBanned: Boolean
   savedBounties: BountyUpdateManyWithoutSavesInput
 }
 
@@ -460,6 +678,7 @@ input UserUpdateWithoutSavedBountiesDataInput {
   name: String
   balance: Int
   stripeID: String
+  isBanned: Boolean
   postedBounties: BountyUpdateManyWithoutCreatedByInput
 }
 
@@ -480,87 +699,228 @@ input UserUpsertWithWhereUniqueWithoutSavedBountiesInput {
 }
 
 input UserWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserWhereInput!]
   id: ID
+
+  """All values that are not equal to given value."""
   id_not: ID
+
+  """All values that are contained in given list."""
   id_in: [ID!]
+
+  """All values that are not contained in given list."""
   id_not_in: [ID!]
+
+  """All values less than the given value."""
   id_lt: ID
+
+  """All values less than or equal the given value."""
   id_lte: ID
+
+  """All values greater than the given value."""
   id_gt: ID
+
+  """All values greater than or equal the given value."""
   id_gte: ID
+
+  """All values containing the given string."""
   id_contains: ID
+
+  """All values not containing the given string."""
   id_not_contains: ID
+
+  """All values starting with the given string."""
   id_starts_with: ID
+
+  """All values not starting with the given string."""
   id_not_starts_with: ID
+
+  """All values ending with the given string."""
   id_ends_with: ID
+
+  """All values not ending with the given string."""
   id_not_ends_with: ID
   createdAt: DateTime
+
+  """All values that are not equal to given value."""
   createdAt_not: DateTime
+
+  """All values that are contained in given list."""
   createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
   createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
   createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
   createdAt_lte: DateTime
+
+  """All values greater than the given value."""
   createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
   createdAt_gte: DateTime
   username: String
+
+  """All values that are not equal to given value."""
   username_not: String
+
+  """All values that are contained in given list."""
   username_in: [String!]
+
+  """All values that are not contained in given list."""
   username_not_in: [String!]
+
+  """All values less than the given value."""
   username_lt: String
+
+  """All values less than or equal the given value."""
   username_lte: String
+
+  """All values greater than the given value."""
   username_gt: String
+
+  """All values greater than or equal the given value."""
   username_gte: String
+
+  """All values containing the given string."""
   username_contains: String
+
+  """All values not containing the given string."""
   username_not_contains: String
+
+  """All values starting with the given string."""
   username_starts_with: String
+
+  """All values not starting with the given string."""
   username_not_starts_with: String
+
+  """All values ending with the given string."""
   username_ends_with: String
+
+  """All values not ending with the given string."""
   username_not_ends_with: String
   name: String
+
+  """All values that are not equal to given value."""
   name_not: String
+
+  """All values that are contained in given list."""
   name_in: [String!]
+
+  """All values that are not contained in given list."""
   name_not_in: [String!]
+
+  """All values less than the given value."""
   name_lt: String
+
+  """All values less than or equal the given value."""
   name_lte: String
+
+  """All values greater than the given value."""
   name_gt: String
+
+  """All values greater than or equal the given value."""
   name_gte: String
+
+  """All values containing the given string."""
   name_contains: String
+
+  """All values not containing the given string."""
   name_not_contains: String
+
+  """All values starting with the given string."""
   name_starts_with: String
+
+  """All values not starting with the given string."""
   name_not_starts_with: String
+
+  """All values ending with the given string."""
   name_ends_with: String
+
+  """All values not ending with the given string."""
   name_not_ends_with: String
   balance: Int
+
+  """All values that are not equal to given value."""
   balance_not: Int
+
+  """All values that are contained in given list."""
   balance_in: [Int!]
+
+  """All values that are not contained in given list."""
   balance_not_in: [Int!]
+
+  """All values less than the given value."""
   balance_lt: Int
+
+  """All values less than or equal the given value."""
   balance_lte: Int
+
+  """All values greater than the given value."""
   balance_gt: Int
+
+  """All values greater than or equal the given value."""
   balance_gte: Int
   stripeID: String
+
+  """All values that are not equal to given value."""
   stripeID_not: String
+
+  """All values that are contained in given list."""
   stripeID_in: [String!]
+
+  """All values that are not contained in given list."""
   stripeID_not_in: [String!]
+
+  """All values less than the given value."""
   stripeID_lt: String
+
+  """All values less than or equal the given value."""
   stripeID_lte: String
+
+  """All values greater than the given value."""
   stripeID_gt: String
+
+  """All values greater than or equal the given value."""
   stripeID_gte: String
+
+  """All values containing the given string."""
   stripeID_contains: String
+
+  """All values not containing the given string."""
   stripeID_not_contains: String
+
+  """All values starting with the given string."""
   stripeID_starts_with: String
+
+  """All values not starting with the given string."""
   stripeID_not_starts_with: String
+
+  """All values ending with the given string."""
   stripeID_ends_with: String
+
+  """All values not ending with the given string."""
   stripeID_not_ends_with: String
+  isBanned: Boolean
+
+  """All values that are not equal to given value."""
+  isBanned_not: Boolean
   postedBounties_every: BountyWhereInput
   postedBounties_some: BountyWhereInput
   postedBounties_none: BountyWhereInput
   savedBounties_every: BountyWhereInput
   savedBounties_some: BountyWhereInput
   savedBounties_none: BountyWhereInput
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
 }
 
 input UserWhereUniqueInput {

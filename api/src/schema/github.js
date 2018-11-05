@@ -1,44 +1,58 @@
 import {
-    introspectSchema,
     makeRemoteExecutableSchema,
     transformSchema,
     RenameTypes,
-    RenameRootFields
+    RenameRootFields,
+    makeExecutableSchema
 } from 'graphql-tools'
 import { HttpLink } from 'apollo-link-http'
-import { setContext } from 'apollo-link-context'
 import fetch from 'node-fetch'
+import path from 'path'
+import fs from 'fs'
+import config from '../config'
 
-const http = new HttpLink({
-    uri: 'https://api.github.com/graphql',
-    fetch
+class GithubLink extends HttpLink {
+    constructor(token) {
+        if (!token) {
+            throw new Error('No Github token provided. Create one here: https://github.com/settings/tokens (Guide: https://developer.github.com/v4/guides/forming-calls/#authenticating-with-graphql)')
+        }
+
+        super({
+            uri: 'https://api.github.com/graphql',
+            headers: { Authorization: `Bearer ${token}` },
+            fetch
+        })
+    }
+}
+
+// create HttpLink using personal auth token
+const link = new GithubLink(config.github.token)
+
+// Read github schema definition from local file
+const githubTypeDefs = fs.readFileSync(
+    path.resolve(__dirname, 'githubTypes.graphql'),
+    { encoding: 'utf8' }
+)
+
+// Create GraphQLSchema with schema definition
+const instrospectionSchema = makeExecutableSchema({
+    typeDefs: githubTypeDefs,
+    resolverValidationOptions: {
+        requireResolversForResolveType: false
+    }
 })
 
-const link = setContext((request, previousContext) => {
-    // console.log(request)
-    // console.log(previousContext)
-    return {
-        headers: {
-            // TODO use token returned from OAuth
-            'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-            // Authorization: `Bearer ${previousContext.graphqlContext.authKey}`
-        }
-    }
-}).concat(http)
+// Create remote executable schema based on schema definition and link
+const githubSchema = makeRemoteExecutableSchema({
+    schema: instrospectionSchema,
+    link
+})
 
-export default async function createGithubSchema() {
-    const schema = await introspectSchema(link)
-    const githubSchema = makeRemoteExecutableSchema({
-        schema,
-        link
-    })
+// transform schema
+// const transformedSchema = transformSchema(githubSchema, [
+//     new RenameTypes((name) => `Github${name}`),
+//     new RenameRootFields((operation, name) => `Github_${name}`),
+// ])
 
-    // TODO remove unnecessary Github API operations
-    const transformedSchema = transformSchema(githubSchema, [
-        new RenameTypes((name) => `Github${name}`),
-        new RenameRootFields((operation, name) => `Github_${name}`),
-    ])
-
-    // return githubSchema
-    return transformedSchema
-}
+// export default transformedSchema
+export default githubSchema
