@@ -1,0 +1,20 @@
+# source: https://5rrx10z19.lp.gql.zone/graphql
+# timestamp: Tue Nov 06 2018 17:52:47 GMT+0100 (Central European Standard Time)
+
+type Location {
+  city: String
+  country: String
+  coords: [Float]
+  mapLink: String
+  weather: Weather
+}
+
+type Query {
+  location(place: String!): Location
+}
+
+type Weather {
+  summary: String
+  temperature: Float
+  coords: [Float]
+}

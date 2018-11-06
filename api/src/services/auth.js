@@ -3,7 +3,7 @@ import config from '../config'
 
 
 // ! Initial endpoint for gettting github code
-// https://github.com/login/oauth/authorize?client_id=249f628624647c891f18&scope=repo%20read:user%20user:email&redirect_uri=http://localhost:4000/graphql
+// https://github.com/login/oauth/authorize?client_id=249f628624647c891f18&scope=repo%20read:user%20user:email&redirect_uri=http://localhost:4000/
 
 export async function getPrismaUser(context, username) {
     return await context.db.query.user({ where: { username }})

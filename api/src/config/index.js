@@ -1,5 +1,5 @@
 require('dotenv').config()
-export default {
+module.exports = {
     github: {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,

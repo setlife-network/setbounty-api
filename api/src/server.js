@@ -3,8 +3,11 @@ import { Prisma } from 'prisma-binding'
 import { importSchema } from 'graphql-import'
 
 import config from './config'
+import resolvers from './resolvers'
 import GithubAPI from './services/GithubAPI'
 import GithubBinding from './services/GithubBinding'
+import WeatherBinding from './services/weather'
+// import githubBinding from './generated/githubBinding'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -17,18 +20,7 @@ const typeDefs = importSchema('src/schema/app.graphql')
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers: {
-        Query: {
-            hello(parent, { name }, context, info) {
-                return `Hello ${name || 'World'}`
-            },
-            favoriteRepos(parent, args, context, info) {
-                return Promise.all(
-                    favoriteRepos.map(args => context.github.query.repository(args, context, info))
-                )
-            }
-        },
-    },
+    resolvers,
     dataSources: () => {
         return {
             github: new GithubAPI()
@@ -42,11 +34,12 @@ const server = new ApolloServer({
                 endpoint: 'http://localhost:4466',
                 secret: config.jwtSecret
             }),
-            github: new GithubBinding(config.github.token)
+            // github: new GithubBinding(config.github.token)
+            weather: new WeatherBinding()
         }
     }
 })
 
 server.listen({ port: 4000 }).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}graphql`)
+    console.log(`🚀  Server ready at ${url}`)
 })

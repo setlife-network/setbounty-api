@@ -29,7 +29,7 @@ export default class GithubBinding extends Binding {
 
         const schema = makeRemoteExecutableSchema({
             schema: typeDefs,
-            link: new GithubLink(token)
+            link: new GithubLink(token),
         })
         
         super({ schema })

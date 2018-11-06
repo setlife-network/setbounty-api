@@ -15,4 +15,7 @@ export default class GithubAPI extends RESTDataSource {
             access_token: token
         })
     }
+    async getRepo() {
+        return this.get('repos/setlife-network/setbounty')
+    }
 }

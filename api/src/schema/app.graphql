@@ -1,18 +1,24 @@
 # import User, Bounty, BountyState from "../generated/prisma.graphql"
-# import Repository from "./github.graphql"
+# import * from "./weather.graphql"
 
 type Query {
     hello(name: String): String!
-    favoriteRepos: [Repository!]!
+    cities: [Location!]!
+    city: Location!
 }
 
-# type Mutation {
-#     authenticate(code: String!): AuthPayload
-# }
+type Mutation {
+    authenticate(code: String!): AuthPayload
+}
 
-# type AuthPayload {
-#     token: String!
-#     user: User!
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+# type Repository {
+#     name: String
+#     hasBounties: Boolean
 # }
 
 # type Issue {
