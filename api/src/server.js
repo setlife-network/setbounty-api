@@ -34,7 +34,7 @@ const server = new ApolloServer({
                 endpoint: 'http://localhost:4466',
                 secret: config.jwtSecret
             }),
-            // github: new GithubBinding(config.github.token)
+            github: new GithubBinding(config.github.token),
             weather: new WeatherBinding()
         }
     }

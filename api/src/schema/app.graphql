@@ -1,4 +1,5 @@
-# import User, Bounty, BountyState from "../generated/prisma.graphql"
+
+# import Repository from "./github.graphql"
 # import * from "./weather.graphql"
 
 type Query {
@@ -13,7 +14,7 @@ type Mutation {
 
 type AuthPayload {
     token: String!
-    user: User!
+    # user: User!
 }
 
 # type Repository {

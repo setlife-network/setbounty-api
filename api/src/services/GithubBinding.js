@@ -1,4 +1,9 @@
-import { makeRemoteExecutableSchema } from 'graphql-tools'
+import {
+    makeRemoteExecutableSchema,
+    transformSchema,
+    RenameRootFields,
+    RenameTypes
+} from 'graphql-tools'
 import { Binding } from 'graphql-binding'
 import { HttpLink } from 'apollo-link-http'
 import fetch from 'node-fetch'
@@ -27,10 +32,23 @@ export default class GithubBinding extends Binding {
             'utf-8'
         )
 
+        // const githubSchema = makeExecutableSchema({
+        //     typeDefs,
+        //     resolverValidationOptions: {
+        //         requireResolversForResolveType: false
+        //     }
+        // })
+
         const schema = makeRemoteExecutableSchema({
             schema: typeDefs,
+            // schema: githubSchema,
             link: new GithubLink(token),
         })
+
+        // const transformedSchema = transformSchema(schema, [
+        //     new RenameTypes((name) => `Github${name}`),
+        //     new RenameRootFields((operation, name) => `Github_${name}`),
+        // ])
         
         super({ schema })
     }
