@@ -1,0 +1,34 @@
+type Issue {
+    # from Github
+    number: Int
+    title: String
+    createdAt: DateTime
+    author: User
+    comments: [Comment]
+    labels: [Label]
+    state: IssueState
+    # from Setbounty
+    savedBy: [User!]!
+    bounties: [Bounty]
+    pullRequest: PullRequest
+}
+
+type PullRequest {
+    # from Github
+    number: Int
+    title: String
+    author: User
+    state: PullRequestState
+    merged: Boolean
+    additions: Int
+    deletions: Int
+    changedFiles: Int
+    # from Setbounty
+    bounties: [Bounty]
+    claimedBy: User
+}
+
+type Query {
+    issues(state: Issuestate): [Issue]
+    user(login)
+}

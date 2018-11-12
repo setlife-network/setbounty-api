@@ -1,7 +1,7 @@
 import { RESTDataSource } from 'apollo-datasource-rest'
 import config from '../config'
 
-export default class GithubAPI extends RESTDataSource {
+export default class GithubREST extends RESTDataSource {
     constructor() {
         super()
         this.baseURL = 'https://api.github.com'
@@ -15,7 +15,7 @@ export default class GithubAPI extends RESTDataSource {
             access_token: token
         })
     }
-    async getRepo() {
-        return this.get('repos/setlife-network/setbounty')
+    async getRepo(params) {
+        return this.get(`repos/${params.owner}/${params.name}`)
     }
 }

@@ -1,38 +1,25 @@
-
+# import User, Bounty from "./app.graphql"
 # import Repository from "./github.graphql"
-# import * from "./weather.graphql"
+
+type RepositoryRest {
+    name: String
+    full_name: String
+    private: Boolean
+    description: String
+    forks_count: Int
+}
 
 type Query {
-    hello(name: String): String!
-    cities: [Location!]!
-    city: Location!
+    repositories: [Repository!]!
+    reposRest: [RepositoryRest!]!
+    reposBinding: [Repository!]!
 }
 
 type Mutation {
-    authenticate(code: String!): AuthPayload
+    authenticate(code: String!): AuthPayload!
 }
 
 type AuthPayload {
     token: String!
-    # user: User!
+    user: User!
 }
-
-# type Repository {
-#     name: String
-#     hasBounties: Boolean
-# }
-
-# type Issue {
-#     number: Int
-#     title: String
-#     createdAt: DateTime
-#     formattedInfo: String
-#     totalBounty: Int
-#     state: BountyState
-#     reviewExpirationDate: DateTime
-#     author: User
-#     bounties: [Bounty]
-#     saves: [User]
-#     comments: [Comment]
-#     pullRequest: PullRequest
-# }

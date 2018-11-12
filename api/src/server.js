@@ -1,29 +1,40 @@
 import { ApolloServer } from 'apollo-server'
 import { Prisma } from 'prisma-binding'
 import { importSchema } from 'graphql-import'
+import { makeExecutableSchema, mergeSchemas } from 'graphql-tools'
 
 import config from './config'
 import resolvers from './resolvers'
-import GithubAPI from './services/GithubAPI'
+import GithubREST from './services/GithubREST'
 import GithubBinding from './services/GithubBinding'
-import WeatherBinding from './services/weather'
-// import githubBinding from './generated/githubBinding'
-
-const isDev = process.env.NODE_ENV === 'development'
-
-const favoriteRepos = [
-    { owner: 'graphcool', name: 'graphql-yoga' },
-    { owner: 'graphql', name: 'graphql-js' },
-]
+import { transformedGithubSchema } from './services/githubSchema'
 
 const typeDefs = importSchema('src/schema/app.graphql')
 
+const appSchema = makeExecutableSchema({ typeDefs })
+
+const schema = mergeSchemas({
+    schemas: [
+        transformedGithubSchema,
+        appSchema
+    ],
+    resolvers
+})
+
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    // typeDefs,
+    // resolvers,
+    schema,
+    engine: {
+        apiKey: process.env.ENGINE_API_KEY
+    },
+    formatResponse(res) {
+        console.log(res)
+        return res
+    },
     dataSources: () => {
         return {
-            github: new GithubAPI()
+            github: new GithubREST()
         }
     },
     context: ({ req }) => {
@@ -35,7 +46,6 @@ const server = new ApolloServer({
                 secret: config.jwtSecret
             }),
             github: new GithubBinding(config.github.token),
-            weather: new WeatherBinding()
         }
     }
 })

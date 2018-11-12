@@ -29,7 +29,7 @@ const link = new GithubLink(config.github.token)
 
 // Read github schema definition from local file
 const typeDefs = fs.readFileSync(
-    path.resolve(__dirname, '../github.graphql'),
+    path.resolve(__dirname, '../schema/github.graphql'),
     { encoding: 'utf8' }
 )
 

@@ -16,14 +16,8 @@ projects:
           url: https://api.github.com/graphql
           headers:
             Authorization: "Bearer ${env:GITHUB_TOKEN}"
-      codegen:
-        - generator: graphql-binding
-          language: javascript
-          input: src/schema/github.js
-          output:
-            binding: src/generated/githubBinding.js
-  weather:
-    schemaPath: src/schema/weather.graphql
-    extensions:
-      endpoints:
-        default: 'https://5rrx10z19.lp.gql.zone/graphql'
+  # weather:
+  #   schemaPath: src/schema/weather.graphql
+  #   extensions:
+  #     endpoints:
+  #       default: 'https://5rrx10z19.lp.gql.zone/graphql'

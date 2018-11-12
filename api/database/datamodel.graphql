@@ -1,7 +1,7 @@
 type User {
     id: ID! @unique
     createdAt: DateTime!
-    username: String! @unique
+    login: String! @unique
     name: String!
     balance: Int @default(value: 0)
     stripeID: String
@@ -19,7 +19,7 @@ type Bounty {
     issueNumber: Int!
     repository: String!
     state: BountyState! @default(value: OPEN)
-    saves: [User!]! @relation(name: "Saved")
+    savedBy: [User!]! @relation(name: "Saved")
 }
 
 enum BountyState {

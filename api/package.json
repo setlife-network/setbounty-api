@@ -7,7 +7,7 @@
     "server": "node index.js",
     "dev": "nodemon --exec babel-node ./src/server.js",
     "build": "webpack",
-    "playground": "graphql playground",
+    "playground": "prisma playground --web --env-file .env",
     "fetch-github-schema": "graphql get-schema --project=github"
   },
   "dependencies": {

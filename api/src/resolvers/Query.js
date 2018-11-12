@@ -1,34 +1,49 @@
-export function hello(parent, { name }, context, info) {
-    return `Hello ${name || 'World'}`
-}
+import githubSchema from '../services/githubSchema'
 
-// export async function repository(parent, args, context, info) {
-//     const repo = await context.dataSources.github.getRepo()
-//     console.log(repo)
-//     return {
-//         name: repo.name,
-//         hasBounties: false
-//     }
-// }
+const repos = [
+    { owner: 'setlife-network', name: 'setbounty' },
+    { owner: 'setlife-network', name: 'setblocks' },
+    { owner: 'setlife-network', name: 'tech-education' },
+]
 
-export function cities(parent, args, context, info) {
-    const places = ['tampa', 'new york', 'gainesville', 'miami']
+export function repositories(parent, args, context, info) {
     return Promise.all(
-        places.map(place => {
-            return context.weather.query.location(
-                { place },
+        repos.map(repo => {
+            return info.mergeInfo.delegateToSchema({
+                schema: githubSchema,
+                operation: 'query',
+                fieldName: 'repository',
+                args: {
+                    owner: repo.owner,
+                    name: repo.name
+                },
+                context,
                 info,
-                { context } // optional
-            )
+                transforms: githubSchema.transforms
+            })
         })
     )
 }
 
-export function city(parent, args, context, info) {
-    const place = 'tampa'
-    return context.weather.query.location(
-        { place },
-        info,
-        { context } // optional
+export function reposRest(parent, args, context, info) {
+    return Promise.all(
+        repos.map(repo => {
+            return context.dataSources.github.getRepo(repo)
+        })
+    )
+}
+
+export function reposBinding(parent,args, context, info) {
+    return Promise.all(
+        repos.map(repo => {
+            return context.github.query.repository(
+                {
+                    name: repo.name,
+                    owner: repo.owner
+                },
+                info,
+                { context }
+            )
+        })
     )
 }
