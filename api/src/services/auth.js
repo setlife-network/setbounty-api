@@ -1,15 +1,14 @@
 import fetch from 'node-fetch'
 import config from '../config'
 
+// ! Initial endpoint for gettting github authorization code
+// 'https://github.com/login/oauth/authorize?client_id=249f628624647c891f18&scope=repo%20read:user%20user:email&redirect_uri=http://localhost:4000/graphql'
 
-// ! Initial endpoint for gettting github code
-// https://github.com/login/oauth/authorize?client_id=249f628624647c891f18&scope=repo%20read:user%20user:email&redirect_uri=http://localhost:4000/
-
-export async function getPrismaUser(context, username) {
-    return await context.db.query.user({ where: { username }})
+export async function getPrismaUser(context, login) {
+    return await context.db.query.user({ where: { login }})
 }
 
-export async function getToken(code) {
+export async function getGithubToken(code) {
     const endpoint = 'https://github.com/login/oauth/access_token'
 
     const data = await fetch(endpoint, {

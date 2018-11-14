@@ -1,4 +1,5 @@
-import githubSchema from '../services/githubSchema'
+import { delegateToSchema } from 'graphql-tools'
+import { githubSchema, transformedGithubSchema } from '../services/githubSchema'
 
 const repos = [
     { owner: 'setlife-network', name: 'setbounty' },
@@ -19,16 +20,7 @@ export function repositories(parent, args, context, info) {
                 },
                 context,
                 info,
-                transforms: githubSchema.transforms
             })
-        })
-    )
-}
-
-export function reposRest(parent, args, context, info) {
-    return Promise.all(
-        repos.map(repo => {
-            return context.dataSources.github.getRepo(repo)
         })
     )
 }
@@ -41,8 +33,7 @@ export function reposBinding(parent,args, context, info) {
                     name: repo.name,
                     owner: repo.owner
                 },
-                info,
-                { context }
+                info
             )
         })
     )

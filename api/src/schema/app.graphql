@@ -1,17 +1,8 @@
 # import User, Bounty from "./app.graphql"
 # import Repository from "./github.graphql"
 
-type RepositoryRest {
-    name: String
-    full_name: String
-    private: Boolean
-    description: String
-    forks_count: Int
-}
-
 type Query {
     repositories: [Repository!]!
-    reposRest: [RepositoryRest!]!
     reposBinding: [Repository!]!
 }
 

@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken'
-import { getPrismaUser, getToken, getUser } from '../services/auth'
+import { getPrismaUser, getGithubToken, getUser } from '../services/auth'
 import config from '../config'
 
-export async function authenticate(_parent, { code }, context) {
-    const githubToken = await getToken(code)
+export async function authenticate(parent, { code }, context) {
+    const githubToken = await getGithubToken(code)
     const githubUser = await getUser(githubToken)
 
     let user = await getPrismaUser(context, githubUser.login)
@@ -12,7 +12,7 @@ export async function authenticate(_parent, { code }, context) {
         console.log('no existing user')
         user = await context.db.mutation.createUser({
             data: {
-                username: githubUser.login,
+                login: githubUser.login,
                 name: githubUser.name
             }
         })
@@ -22,4 +22,13 @@ export async function authenticate(_parent, { code }, context) {
         token: jwt.sign({ userId: user.id }, config.jwtSecret),
         user
     }
+}
+
+async function createBounty(parent, args, context, info) {
+    const bounty = await context.db.mutation.createBounty({
+        amount: args.amount,
+        issueNumber: args.issueNumber,
+        repository: args.repository,
+        expirationDate: args.expirationDate
+    })
 }
