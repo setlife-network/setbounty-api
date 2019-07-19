@@ -3,26 +3,26 @@
     "name": "SetBounty",
     "description": "Fund open-source projects",
     "version": "0.1",
-
     "browser_action": {
         "default_title": "SetBounty"
     },
-    
     "background": {
         "scripts": ["background.js"]
     },
-    
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
             "js": ["content.js"]
         }
     ],
-    "web_accessible_resources": [
-    ],
     "permissions": [
-        "<all_urls>",
         "storage",
-        "activeTab"
-    ]
+        "identity",
+        "https://api.github.com/*",
+        "https://github.com/"
+    ],
+    "oauth2": {
+        "client_id": "",
+        "scopes": []
+    }
 }

@@ -1,12 +1,9 @@
 import jwt from 'jsonwebtoken'
-import { getPrismaUser, getGithubToken, getUser } from '../services/auth'
+import { getPrismaUser } from '../services/auth'
 import config from '../config'
 
-export async function authenticate(parent, { code }, context) {
-    const githubToken = await getGithubToken(code)
-    const githubUser = await getUser(githubToken)
-
-    let user = await getPrismaUser(context, githubUser.login)
+export async function authenticate(parent, { login }, context) {
+    let user = await getPrismaUser(context, login)
 
     if (!user) {
         console.log('no existing user')

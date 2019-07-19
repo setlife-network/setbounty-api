@@ -6,25 +6,44 @@ type User {
     balance: Int @default(value: 0)
     stripeID: String
     isBanned: Boolean @default(value: "false")
-    postedBounties: [Bounty!]! @relation(name: "Posted")
+    createdBounties: [Bounty!]! @relation(name: "Created")
     savedBounties: [Bounty!]! @relation(name: "Saved")
+    claims: [Claim!]! @relation(name: "ClaimedBounties")
 }
 
 type Bounty {
     id: ID! @unique
     createdAt: DateTime!
-    createdBy: User! @relation(name: "Posted")
+    createdBy: User! @relation(name: "Created")
     expirationDate: DateTime!
     amount: Int!
+    issueURL: String!
     issueNumber: Int!
     repository: String!
     state: BountyState! @default(value: OPEN)
     savedBy: [User!]! @relation(name: "Saved")
+    claim: Claim
+}
+
+type Claim {
+    id: ID! @unique
+    createdAt: DateTime!
+    createdBy: User! @relation(name: "ClaimedBounties")
+    issueURL: String!
+    pullRequestURL: String!
+    state: ClaimState! @default(value: PENDING)
+    bounties: [Bounty!]!
 }
 
 enum BountyState {
     OPEN,
-    PENDING,
-    CLOSED,
+    PAUSED,
+    CLAIMED,
     EXPIRED
+}
+
+enum ClaimState {
+    PENDING,
+    ACCEPTED,
+    REJECTED
 }

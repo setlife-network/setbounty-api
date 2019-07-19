@@ -3,11 +3,25 @@
   "private": true,
   "workspaces": [
     "api",
-    "chrome",
-    "tools"
+    "chrome"
   ],
   "devDependencies": {
-    "lerna": "^3.4.0"
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.1",
+    "nodemon": "^1.18.4",
+    "lerna": "^3.4.0",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-merge": "^4.1.4"
   },
   "scripts": {
     "clean": "lerna clean",

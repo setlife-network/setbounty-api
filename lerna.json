@@ -1,8 +1,7 @@
 {
   "packages": [
     "api",
-    "chrome",
-    "tools"
+    "chrome"
   ],
   "version": "independent",
   "npmClient": "yarn",

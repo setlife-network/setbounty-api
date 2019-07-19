@@ -1,13 +1,15 @@
 import { RESTDataSource } from 'apollo-datasource-rest'
-import config from '../config'
 
 export default class GithubREST extends RESTDataSource {
-    constructor() {
+    constructor(token) {
         super()
         this.baseURL = 'https://api.github.com'
+        this.token = token
+        console.log(token)
     }
     willSendRequest(request) {
-        request.headers.set('Authorization', config.github.token)
+        // TODO use token from headers
+        request.headers.set('Authorization', this.token)
         request.headers.set('Accept', 'application/vnd.github.v3+json')
     }
     async getUser(token) {

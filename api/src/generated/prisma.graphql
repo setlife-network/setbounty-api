@@ -1,7 +1,11 @@
 # source: http://localhost:4466
-# timestamp: Mon Nov 12 2018 09:52:15 GMT+0100 (Central European Standard Time)
+# timestamp: Thu Dec 06 2018 20:33:08 GMT+0000 (Greenwich Mean Time)
 
 type AggregateBounty {
+  count: Int!
+}
+
+type AggregateClaim {
   count: Int!
 }
 
@@ -20,10 +24,12 @@ type Bounty implements Node {
   createdBy(where: UserWhereInput): User!
   expirationDate: DateTime!
   amount: Int!
+  issueURL: String!
   issueNumber: Int!
   repository: String!
   state: BountyState!
   savedBy(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  claim(where: ClaimWhereInput): Claim
 }
 
 """A connection to a list of items."""
@@ -39,11 +45,18 @@ type BountyConnection {
 input BountyCreateInput {
   expirationDate: DateTime!
   amount: Int!
+  issueURL: String!
   issueNumber: Int!
   repository: String!
   state: BountyState
-  createdBy: UserCreateOneWithoutPostedBountiesInput!
+  createdBy: UserCreateOneWithoutCreatedBountiesInput!
   savedBy: UserCreateManyWithoutSavedBountiesInput
+  claim: ClaimCreateOneWithoutBountiesInput
+}
+
+input BountyCreateManyWithoutClaimInput {
+  create: [BountyCreateWithoutClaimInput!]
+  connect: [BountyWhereUniqueInput!]
 }
 
 input BountyCreateManyWithoutCreatedByInput {
@@ -56,22 +69,37 @@ input BountyCreateManyWithoutSavedByInput {
   connect: [BountyWhereUniqueInput!]
 }
 
+input BountyCreateWithoutClaimInput {
+  expirationDate: DateTime!
+  amount: Int!
+  issueURL: String!
+  issueNumber: Int!
+  repository: String!
+  state: BountyState
+  createdBy: UserCreateOneWithoutCreatedBountiesInput!
+  savedBy: UserCreateManyWithoutSavedBountiesInput
+}
+
 input BountyCreateWithoutCreatedByInput {
   expirationDate: DateTime!
   amount: Int!
+  issueURL: String!
   issueNumber: Int!
   repository: String!
   state: BountyState
   savedBy: UserCreateManyWithoutSavedBountiesInput
+  claim: ClaimCreateOneWithoutBountiesInput
 }
 
 input BountyCreateWithoutSavedByInput {
   expirationDate: DateTime!
   amount: Int!
+  issueURL: String!
   issueNumber: Int!
   repository: String!
   state: BountyState
-  createdBy: UserCreateOneWithoutPostedBountiesInput!
+  createdBy: UserCreateOneWithoutCreatedBountiesInput!
+  claim: ClaimCreateOneWithoutBountiesInput
 }
 
 """An edge in a connection."""
@@ -92,6 +120,8 @@ enum BountyOrderByInput {
   expirationDate_DESC
   amount_ASC
   amount_DESC
+  issueURL_ASC
+  issueURL_DESC
   issueNumber_ASC
   issueNumber_DESC
   repository_ASC
@@ -107,6 +137,7 @@ type BountyPreviousValues {
   createdAt: DateTime!
   expirationDate: DateTime!
   amount: Int!
+  issueURL: String!
   issueNumber: Int!
   repository: String!
   state: BountyState!
@@ -114,8 +145,8 @@ type BountyPreviousValues {
 
 enum BountyState {
   OPEN
-  PENDING
-  CLOSED
+  PAUSED
+  CLAIMED
   EXPIRED
 }
 
@@ -161,11 +192,22 @@ input BountySubscriptionWhereInput {
 input BountyUpdateInput {
   expirationDate: DateTime
   amount: Int
+  issueURL: String
   issueNumber: Int
   repository: String
   state: BountyState
-  createdBy: UserUpdateOneRequiredWithoutPostedBountiesInput
+  createdBy: UserUpdateOneRequiredWithoutCreatedBountiesInput
   savedBy: UserUpdateManyWithoutSavedBountiesInput
+  claim: ClaimUpdateOneWithoutBountiesInput
+}
+
+input BountyUpdateManyWithoutClaimInput {
+  create: [BountyCreateWithoutClaimInput!]
+  connect: [BountyWhereUniqueInput!]
+  disconnect: [BountyWhereUniqueInput!]
+  delete: [BountyWhereUniqueInput!]
+  update: [BountyUpdateWithWhereUniqueWithoutClaimInput!]
+  upsert: [BountyUpsertWithWhereUniqueWithoutClaimInput!]
 }
 
 input BountyUpdateManyWithoutCreatedByInput {
@@ -186,22 +228,42 @@ input BountyUpdateManyWithoutSavedByInput {
   upsert: [BountyUpsertWithWhereUniqueWithoutSavedByInput!]
 }
 
+input BountyUpdateWithoutClaimDataInput {
+  expirationDate: DateTime
+  amount: Int
+  issueURL: String
+  issueNumber: Int
+  repository: String
+  state: BountyState
+  createdBy: UserUpdateOneRequiredWithoutCreatedBountiesInput
+  savedBy: UserUpdateManyWithoutSavedBountiesInput
+}
+
 input BountyUpdateWithoutCreatedByDataInput {
   expirationDate: DateTime
   amount: Int
+  issueURL: String
   issueNumber: Int
   repository: String
   state: BountyState
   savedBy: UserUpdateManyWithoutSavedBountiesInput
+  claim: ClaimUpdateOneWithoutBountiesInput
 }
 
 input BountyUpdateWithoutSavedByDataInput {
   expirationDate: DateTime
   amount: Int
+  issueURL: String
   issueNumber: Int
   repository: String
   state: BountyState
-  createdBy: UserUpdateOneRequiredWithoutPostedBountiesInput
+  createdBy: UserUpdateOneRequiredWithoutCreatedBountiesInput
+  claim: ClaimUpdateOneWithoutBountiesInput
+}
+
+input BountyUpdateWithWhereUniqueWithoutClaimInput {
+  where: BountyWhereUniqueInput!
+  data: BountyUpdateWithoutClaimDataInput!
 }
 
 input BountyUpdateWithWhereUniqueWithoutCreatedByInput {
@@ -212,6 +274,12 @@ input BountyUpdateWithWhereUniqueWithoutCreatedByInput {
 input BountyUpdateWithWhereUniqueWithoutSavedByInput {
   where: BountyWhereUniqueInput!
   data: BountyUpdateWithoutSavedByDataInput!
+}
+
+input BountyUpsertWithWhereUniqueWithoutClaimInput {
+  where: BountyWhereUniqueInput!
+  update: BountyUpdateWithoutClaimDataInput!
+  create: BountyCreateWithoutClaimInput!
 }
 
 input BountyUpsertWithWhereUniqueWithoutCreatedByInput {
@@ -341,6 +409,46 @@ input BountyWhereInput {
 
   """All values greater than or equal the given value."""
   amount_gte: Int
+  issueURL: String
+
+  """All values that are not equal to given value."""
+  issueURL_not: String
+
+  """All values that are contained in given list."""
+  issueURL_in: [String!]
+
+  """All values that are not contained in given list."""
+  issueURL_not_in: [String!]
+
+  """All values less than the given value."""
+  issueURL_lt: String
+
+  """All values less than or equal the given value."""
+  issueURL_lte: String
+
+  """All values greater than the given value."""
+  issueURL_gt: String
+
+  """All values greater than or equal the given value."""
+  issueURL_gte: String
+
+  """All values containing the given string."""
+  issueURL_contains: String
+
+  """All values not containing the given string."""
+  issueURL_not_contains: String
+
+  """All values starting with the given string."""
+  issueURL_starts_with: String
+
+  """All values not starting with the given string."""
+  issueURL_not_starts_with: String
+
+  """All values ending with the given string."""
+  issueURL_ends_with: String
+
+  """All values not ending with the given string."""
+  issueURL_not_ends_with: String
   issueNumber: Int
 
   """All values that are not equal to given value."""
@@ -417,9 +525,366 @@ input BountyWhereInput {
   savedBy_every: UserWhereInput
   savedBy_some: UserWhereInput
   savedBy_none: UserWhereInput
+  claim: ClaimWhereInput
 }
 
 input BountyWhereUniqueInput {
+  id: ID
+}
+
+type Claim implements Node {
+  id: ID!
+  createdAt: DateTime!
+  createdBy(where: UserWhereInput): User!
+  issueURL: String!
+  pullRequestURL: String!
+  state: ClaimState!
+  bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
+}
+
+"""A connection to a list of items."""
+type ClaimConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ClaimEdge]!
+  aggregate: AggregateClaim!
+}
+
+input ClaimCreateInput {
+  issueURL: String!
+  pullRequestURL: String!
+  state: ClaimState
+  createdBy: UserCreateOneWithoutClaimsInput!
+  bounties: BountyCreateManyWithoutClaimInput
+}
+
+input ClaimCreateManyWithoutCreatedByInput {
+  create: [ClaimCreateWithoutCreatedByInput!]
+  connect: [ClaimWhereUniqueInput!]
+}
+
+input ClaimCreateOneWithoutBountiesInput {
+  create: ClaimCreateWithoutBountiesInput
+  connect: ClaimWhereUniqueInput
+}
+
+input ClaimCreateWithoutBountiesInput {
+  issueURL: String!
+  pullRequestURL: String!
+  state: ClaimState
+  createdBy: UserCreateOneWithoutClaimsInput!
+}
+
+input ClaimCreateWithoutCreatedByInput {
+  issueURL: String!
+  pullRequestURL: String!
+  state: ClaimState
+  bounties: BountyCreateManyWithoutClaimInput
+}
+
+"""An edge in a connection."""
+type ClaimEdge {
+  """The item at the end of the edge."""
+  node: Claim!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ClaimOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  issueURL_ASC
+  issueURL_DESC
+  pullRequestURL_ASC
+  pullRequestURL_DESC
+  state_ASC
+  state_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ClaimPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  issueURL: String!
+  pullRequestURL: String!
+  state: ClaimState!
+}
+
+enum ClaimState {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+type ClaimSubscriptionPayload {
+  mutation: MutationType!
+  node: Claim
+  updatedFields: [String!]
+  previousValues: ClaimPreviousValues
+}
+
+input ClaimSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ClaimSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ClaimSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ClaimSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ClaimWhereInput
+}
+
+input ClaimUpdateInput {
+  issueURL: String
+  pullRequestURL: String
+  state: ClaimState
+  createdBy: UserUpdateOneRequiredWithoutClaimsInput
+  bounties: BountyUpdateManyWithoutClaimInput
+}
+
+input ClaimUpdateManyWithoutCreatedByInput {
+  create: [ClaimCreateWithoutCreatedByInput!]
+  connect: [ClaimWhereUniqueInput!]
+  disconnect: [ClaimWhereUniqueInput!]
+  delete: [ClaimWhereUniqueInput!]
+  update: [ClaimUpdateWithWhereUniqueWithoutCreatedByInput!]
+  upsert: [ClaimUpsertWithWhereUniqueWithoutCreatedByInput!]
+}
+
+input ClaimUpdateOneWithoutBountiesInput {
+  create: ClaimCreateWithoutBountiesInput
+  connect: ClaimWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ClaimUpdateWithoutBountiesDataInput
+  upsert: ClaimUpsertWithoutBountiesInput
+}
+
+input ClaimUpdateWithoutBountiesDataInput {
+  issueURL: String
+  pullRequestURL: String
+  state: ClaimState
+  createdBy: UserUpdateOneRequiredWithoutClaimsInput
+}
+
+input ClaimUpdateWithoutCreatedByDataInput {
+  issueURL: String
+  pullRequestURL: String
+  state: ClaimState
+  bounties: BountyUpdateManyWithoutClaimInput
+}
+
+input ClaimUpdateWithWhereUniqueWithoutCreatedByInput {
+  where: ClaimWhereUniqueInput!
+  data: ClaimUpdateWithoutCreatedByDataInput!
+}
+
+input ClaimUpsertWithoutBountiesInput {
+  update: ClaimUpdateWithoutBountiesDataInput!
+  create: ClaimCreateWithoutBountiesInput!
+}
+
+input ClaimUpsertWithWhereUniqueWithoutCreatedByInput {
+  where: ClaimWhereUniqueInput!
+  update: ClaimUpdateWithoutCreatedByDataInput!
+  create: ClaimCreateWithoutCreatedByInput!
+}
+
+input ClaimWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ClaimWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ClaimWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ClaimWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  issueURL: String
+
+  """All values that are not equal to given value."""
+  issueURL_not: String
+
+  """All values that are contained in given list."""
+  issueURL_in: [String!]
+
+  """All values that are not contained in given list."""
+  issueURL_not_in: [String!]
+
+  """All values less than the given value."""
+  issueURL_lt: String
+
+  """All values less than or equal the given value."""
+  issueURL_lte: String
+
+  """All values greater than the given value."""
+  issueURL_gt: String
+
+  """All values greater than or equal the given value."""
+  issueURL_gte: String
+
+  """All values containing the given string."""
+  issueURL_contains: String
+
+  """All values not containing the given string."""
+  issueURL_not_contains: String
+
+  """All values starting with the given string."""
+  issueURL_starts_with: String
+
+  """All values not starting with the given string."""
+  issueURL_not_starts_with: String
+
+  """All values ending with the given string."""
+  issueURL_ends_with: String
+
+  """All values not ending with the given string."""
+  issueURL_not_ends_with: String
+  pullRequestURL: String
+
+  """All values that are not equal to given value."""
+  pullRequestURL_not: String
+
+  """All values that are contained in given list."""
+  pullRequestURL_in: [String!]
+
+  """All values that are not contained in given list."""
+  pullRequestURL_not_in: [String!]
+
+  """All values less than the given value."""
+  pullRequestURL_lt: String
+
+  """All values less than or equal the given value."""
+  pullRequestURL_lte: String
+
+  """All values greater than the given value."""
+  pullRequestURL_gt: String
+
+  """All values greater than or equal the given value."""
+  pullRequestURL_gte: String
+
+  """All values containing the given string."""
+  pullRequestURL_contains: String
+
+  """All values not containing the given string."""
+  pullRequestURL_not_contains: String
+
+  """All values starting with the given string."""
+  pullRequestURL_starts_with: String
+
+  """All values not starting with the given string."""
+  pullRequestURL_not_starts_with: String
+
+  """All values ending with the given string."""
+  pullRequestURL_ends_with: String
+
+  """All values not ending with the given string."""
+  pullRequestURL_not_ends_with: String
+  state: ClaimState
+
+  """All values that are not equal to given value."""
+  state_not: ClaimState
+
+  """All values that are contained in given list."""
+  state_in: [ClaimState!]
+
+  """All values that are not contained in given list."""
+  state_not_in: [ClaimState!]
+  createdBy: UserWhereInput
+  bounties_every: BountyWhereInput
+  bounties_some: BountyWhereInput
+  bounties_none: BountyWhereInput
+}
+
+input ClaimWhereUniqueInput {
   id: ID
 }
 
@@ -437,16 +902,22 @@ scalar Long
 type Mutation {
   createUser(data: UserCreateInput!): User!
   createBounty(data: BountyCreateInput!): Bounty!
+  createClaim(data: ClaimCreateInput!): Claim!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateBounty(data: BountyUpdateInput!, where: BountyWhereUniqueInput!): Bounty
+  updateClaim(data: ClaimUpdateInput!, where: ClaimWhereUniqueInput!): Claim
   deleteUser(where: UserWhereUniqueInput!): User
   deleteBounty(where: BountyWhereUniqueInput!): Bounty
+  deleteClaim(where: ClaimWhereUniqueInput!): Claim
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertBounty(where: BountyWhereUniqueInput!, create: BountyCreateInput!, update: BountyUpdateInput!): Bounty!
+  upsertClaim(where: ClaimWhereUniqueInput!, create: ClaimCreateInput!, update: ClaimUpdateInput!): Claim!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   updateManyBounties(data: BountyUpdateInput!, where: BountyWhereInput): BatchPayload!
+  updateManyClaims(data: ClaimUpdateInput!, where: ClaimWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyBounties(where: BountyWhereInput): BatchPayload!
+  deleteManyClaims(where: ClaimWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -484,10 +955,13 @@ enum PrismaDatabase {
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   bounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty]!
+  claims(where: ClaimWhereInput, orderBy: ClaimOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Claim]!
   user(where: UserWhereUniqueInput!): User
   bounty(where: BountyWhereUniqueInput!): Bounty
+  claim(where: ClaimWhereUniqueInput!): Claim
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   bountiesConnection(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BountyConnection!
+  claimsConnection(where: ClaimWhereInput, orderBy: ClaimOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ClaimConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -499,6 +973,7 @@ type Query {
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   bounty(where: BountySubscriptionWhereInput): BountySubscriptionPayload
+  claim(where: ClaimSubscriptionWhereInput): ClaimSubscriptionPayload
 }
 
 type User implements Node {
@@ -509,8 +984,9 @@ type User implements Node {
   balance: Int
   stripeID: String
   isBanned: Boolean
-  postedBounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
+  createdBounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
   savedBounties(where: BountyWhereInput, orderBy: BountyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bounty!]
+  claims(where: ClaimWhereInput, orderBy: ClaimOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Claim!]
 }
 
 """A connection to a list of items."""
@@ -529,8 +1005,9 @@ input UserCreateInput {
   balance: Int
   stripeID: String
   isBanned: Boolean
-  postedBounties: BountyCreateManyWithoutCreatedByInput
+  createdBounties: BountyCreateManyWithoutCreatedByInput
   savedBounties: BountyCreateManyWithoutSavedByInput
+  claims: ClaimCreateManyWithoutCreatedByInput
 }
 
 input UserCreateManyWithoutSavedBountiesInput {
@@ -538,18 +1015,34 @@ input UserCreateManyWithoutSavedBountiesInput {
   connect: [UserWhereUniqueInput!]
 }
 
-input UserCreateOneWithoutPostedBountiesInput {
-  create: UserCreateWithoutPostedBountiesInput
+input UserCreateOneWithoutClaimsInput {
+  create: UserCreateWithoutClaimsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutPostedBountiesInput {
+input UserCreateOneWithoutCreatedBountiesInput {
+  create: UserCreateWithoutCreatedBountiesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutClaimsInput {
+  login: String!
+  name: String!
+  balance: Int
+  stripeID: String
+  isBanned: Boolean
+  createdBounties: BountyCreateManyWithoutCreatedByInput
+  savedBounties: BountyCreateManyWithoutSavedByInput
+}
+
+input UserCreateWithoutCreatedBountiesInput {
   login: String!
   name: String!
   balance: Int
   stripeID: String
   isBanned: Boolean
   savedBounties: BountyCreateManyWithoutSavedByInput
+  claims: ClaimCreateManyWithoutCreatedByInput
 }
 
 input UserCreateWithoutSavedBountiesInput {
@@ -558,7 +1051,8 @@ input UserCreateWithoutSavedBountiesInput {
   balance: Int
   stripeID: String
   isBanned: Boolean
-  postedBounties: BountyCreateManyWithoutCreatedByInput
+  createdBounties: BountyCreateManyWithoutCreatedByInput
+  claims: ClaimCreateManyWithoutCreatedByInput
 }
 
 """An edge in a connection."""
@@ -644,8 +1138,9 @@ input UserUpdateInput {
   balance: Int
   stripeID: String
   isBanned: Boolean
-  postedBounties: BountyUpdateManyWithoutCreatedByInput
+  createdBounties: BountyUpdateManyWithoutCreatedByInput
   savedBounties: BountyUpdateManyWithoutSavedByInput
+  claims: ClaimUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateManyWithoutSavedBountiesInput {
@@ -657,20 +1152,38 @@ input UserUpdateManyWithoutSavedBountiesInput {
   upsert: [UserUpsertWithWhereUniqueWithoutSavedBountiesInput!]
 }
 
-input UserUpdateOneRequiredWithoutPostedBountiesInput {
-  create: UserCreateWithoutPostedBountiesInput
+input UserUpdateOneRequiredWithoutClaimsInput {
+  create: UserCreateWithoutClaimsInput
   connect: UserWhereUniqueInput
-  update: UserUpdateWithoutPostedBountiesDataInput
-  upsert: UserUpsertWithoutPostedBountiesInput
+  update: UserUpdateWithoutClaimsDataInput
+  upsert: UserUpsertWithoutClaimsInput
 }
 
-input UserUpdateWithoutPostedBountiesDataInput {
+input UserUpdateOneRequiredWithoutCreatedBountiesInput {
+  create: UserCreateWithoutCreatedBountiesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutCreatedBountiesDataInput
+  upsert: UserUpsertWithoutCreatedBountiesInput
+}
+
+input UserUpdateWithoutClaimsDataInput {
+  login: String
+  name: String
+  balance: Int
+  stripeID: String
+  isBanned: Boolean
+  createdBounties: BountyUpdateManyWithoutCreatedByInput
+  savedBounties: BountyUpdateManyWithoutSavedByInput
+}
+
+input UserUpdateWithoutCreatedBountiesDataInput {
   login: String
   name: String
   balance: Int
   stripeID: String
   isBanned: Boolean
   savedBounties: BountyUpdateManyWithoutSavedByInput
+  claims: ClaimUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateWithoutSavedBountiesDataInput {
@@ -679,7 +1192,8 @@ input UserUpdateWithoutSavedBountiesDataInput {
   balance: Int
   stripeID: String
   isBanned: Boolean
-  postedBounties: BountyUpdateManyWithoutCreatedByInput
+  createdBounties: BountyUpdateManyWithoutCreatedByInput
+  claims: ClaimUpdateManyWithoutCreatedByInput
 }
 
 input UserUpdateWithWhereUniqueWithoutSavedBountiesInput {
@@ -687,9 +1201,14 @@ input UserUpdateWithWhereUniqueWithoutSavedBountiesInput {
   data: UserUpdateWithoutSavedBountiesDataInput!
 }
 
-input UserUpsertWithoutPostedBountiesInput {
-  update: UserUpdateWithoutPostedBountiesDataInput!
-  create: UserCreateWithoutPostedBountiesInput!
+input UserUpsertWithoutClaimsInput {
+  update: UserUpdateWithoutClaimsDataInput!
+  create: UserCreateWithoutClaimsInput!
+}
+
+input UserUpsertWithoutCreatedBountiesInput {
+  update: UserUpdateWithoutCreatedBountiesDataInput!
+  create: UserCreateWithoutCreatedBountiesInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutSavedBountiesInput {
@@ -915,12 +1434,15 @@ input UserWhereInput {
 
   """All values that are not equal to given value."""
   isBanned_not: Boolean
-  postedBounties_every: BountyWhereInput
-  postedBounties_some: BountyWhereInput
-  postedBounties_none: BountyWhereInput
+  createdBounties_every: BountyWhereInput
+  createdBounties_some: BountyWhereInput
+  createdBounties_none: BountyWhereInput
   savedBounties_every: BountyWhereInput
   savedBounties_some: BountyWhereInput
   savedBounties_none: BountyWhereInput
+  claims_every: ClaimWhereInput
+  claims_some: ClaimWhereInput
+  claims_none: ClaimWhereInput
 }
 
 input UserWhereUniqueInput {
